@@ -133,4 +133,32 @@ public class VideoDAO {
 
 		return null;
 	}
+	
+	public static int last() {
+		Connection conn = ConnectionManager.getConnection();
+	
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			String query = "SELECT id FROM videos ORDER BY ID DESC LIMIT 1";
+	
+			pstmt = conn.prepareStatement(query);
+	
+			rset = pstmt.executeQuery();
+			if (rset.next()) {
+				int index = 1;
+				int id = rset.getInt(index++);
+	
+				return id;
+			}
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+			try {rset.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+		
+		return 0;
+	}
 }

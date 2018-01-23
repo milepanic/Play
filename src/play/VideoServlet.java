@@ -48,7 +48,7 @@ public class VideoServlet extends HttpServlet {
 		String[] parts = YoutubeUrl.split("=");
 		String id = parts[1];
 		
-		int videoId = 2;
+		int videoId = VideoDAO.last() + 1;
 		String url = "https://www.youtube.com/embed/" + id;
 		String thumbnail = "https://img.youtube.com/vi/" + id + "/0.jpg";
 		

@@ -14,6 +14,32 @@ import play.model.Video;
 
 public class CommentDAO {
 	
+	public static boolean add(Comment comment) {
+		Connection conn = ConnectionManager.getConnection();
+
+		PreparedStatement pstmt = null;
+		try {
+			String query = "INSERT INTO comments (text, user_id, video_id) "
+					+ "VALUES (?, ?, ?)";
+
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			pstmt.setString(index++, comment.getText());
+			pstmt.setInt(index++, comment.getUserId());
+			pstmt.setInt(index++, comment.getVideoId());
+			System.out.println(pstmt);
+
+			return pstmt.executeUpdate() == 1;
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+
+		return false;
+	}
+	
 	public static List<Comment> getAll(int id) {
 		
 		List<Comment> comments = new ArrayList<>();
@@ -36,14 +62,10 @@ public class CommentDAO {
 				int commentId = rset.getInt(index++);
 				String text = rset.getString(index++);
 				Date createdAt = rset.getDate(index++);
-				//int userId = rset.getInt(index++);
-				//int videoId = rset.getInt(index++);
-				
-				//Query za trazenje usera
-				//String query2 = "SELECT * FROM users WHERE id = ?";
-				
+				int userId = rset.getInt(index++);
+				int videoId = rset.getInt(index++);
 	
-				Comment comment = new Comment(commentId, text, createdAt);
+				Comment comment = new Comment(commentId, text, createdAt, userId, videoId);
 				comments.add(comment);
 			}
 		} catch (SQLException ex) {
@@ -57,30 +79,32 @@ public class CommentDAO {
 		return comments;
 	}
 	
-	public static boolean add(Comment comment) {
+	public static int last() {
 		Connection conn = ConnectionManager.getConnection();
-
+	
 		PreparedStatement pstmt = null;
+		ResultSet rset = null;
 		try {
-			String query = "INSERT INTO comments (text, user_id, video_id) "
-					+ "VALUES (?, 1, 1)";
-
+			String query = "SELECT id FROM comments ORDER BY ID DESC LIMIT 1";
+	
 			pstmt = conn.prepareStatement(query);
-			int index = 1;
-			pstmt.setString(index++, comment.getText());
-			//pstmt.setDouble(index++, comment.getUser().get);
-			//pstmt.setInt(index++, comment.getVideo().getId());
-			System.out.println(pstmt);
-
-			return pstmt.executeUpdate() == 1;
+	
+			rset = pstmt.executeQuery();
+			if (rset.next()) {
+				int index = 1;
+				int id = rset.getInt(index++);
+	
+				return id;
+			}
 		} catch (SQLException ex) {
 			System.out.println("Greska u SQL upitu!");
 			ex.printStackTrace();
 		} finally {
 			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+			try {rset.close();} catch (SQLException ex1) {ex1.printStackTrace();}
 		}
-
-		return false;
+		
+		return 0;
 	}
 	
 }

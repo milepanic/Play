@@ -28,6 +28,18 @@ public class User {
 		//this.role = role;
 		this.banned = banned;
 	}
+	
+	public User() {
+		username = "";
+		password = "";
+		firstName = "";
+		lastName = "";
+		email = "";
+		description = "";
+		registeredAt = new Date();
+		role = Role.USER;
+		banned = false;
+	}
 
 	public String getUsername() {
 		return username;

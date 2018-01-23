@@ -7,9 +7,37 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import play.model.User;
-import play.model.User.Role;
 
 public class UserDAO {
+	
+	public static boolean create(User user) {
+		Connection conn = ConnectionManager.getConnection();
+
+		PreparedStatement pstmt = null;
+		try {
+			String query = "INSERT INTO users (username, password, firstname, lastname, email, description) "
+					+ "VALUES (?, ?, ?, ?, ?, ?)";
+
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			pstmt.setString(index++, user.getUsername());
+			pstmt.setString(index++, user.getPassword());
+			pstmt.setString(index++, user.getFirstName());
+			pstmt.setString(index++, user.getLastName());
+			pstmt.setString(index++, user.getEmail());
+			pstmt.setString(index++, user.getPassword());
+			System.out.println(pstmt);
+
+			return pstmt.executeUpdate() == 1;
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+
+		return false;
+	}
 	
 	public static User get(int id) {
 		Connection conn = ConnectionManager.getConnection();

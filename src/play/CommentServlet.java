@@ -39,10 +39,13 @@ public class CommentServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String text = request.getParameter("text");
-		String userId = request.getParameter("user_id");
-		String videoId = request.getParameter("video_id");
+		int userId = Integer.parseInt(request.getParameter("user_id"));
+		int videoId = Integer.parseInt(request.getParameter("video_id"));
 		
-		Comment comment = new Comment(1, text, new Date());
+		int commentId = CommentDAO.last() + 1;
+		System.out.println(commentId);
+		
+		Comment comment = new Comment(commentId, text, new Date(), userId, videoId);
 		
 		CommentDAO.add(comment);
 		

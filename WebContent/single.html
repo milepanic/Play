@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-	<title>Single Page</title>
+	<title></title>
 	<link rel="icon" href="img/logosm.png">
 
 	<!-- Font Awesome -->
@@ -13,6 +13,7 @@
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<!-- Custom CSS -->
 	<link rel="stylesheet" type="text/css" href="css/style.css">
+	
 </head>
 <body>
 	
@@ -75,7 +76,7 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li>
-                    <a href="#"  class="margin-top">Home</a>
+                    <a href="index.html" class="margin-top"><i class="fa fa-home" aria-hidden="true"></i> Home</a>
                 </li>
                 <li>
                     <a href="#">Trending</a>
@@ -84,7 +85,7 @@
                     <a href="#">History</a>
                 </li>
                 <li>
-                    <a href="upload.html">Upload</a>
+                    <a href="upload.html"><i class="fa fa-upload" aria-hidden="true"></i> Upload</a>
                 </li>
                 <li>
                     <a href="#"  class="margin-top">Edit profile</a>
@@ -154,10 +155,11 @@
 
 	                        <div class="video-single-comments">
 	                        	<h5>COMMENTS • 133</h5>
-	                        	<form method="POST" action="CommentServlet">
-	                        		<textarea name="text" class="write-comment" rows="1" placeholder="Add Comment"></textarea>
-	                        		<button type="submit" id="comment-btn" class="btn btn-success">Add Comment</button>
-	                        	</form>
+	                        	
+	                        	<textarea name="text" class="write-comment" rows="1" placeholder="Write Comment"></textarea>
+	                        	<button type="submit" id="comment-btn" class="btn btn-default btn-add-comment">Submit</button>
+								
+								<div class="clearfix"></div>
 								
 								<div class="comments"></div>
 	                        	

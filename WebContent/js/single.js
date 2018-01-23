@@ -7,6 +7,8 @@ $(document).ready(function() {
 		var video_box = $('.video-single-box');
 		
 		$.get('VideoServlet', {'id': id}, function(data) {
+			$(document).attr('title', data.video.name);
+			
 			video_box.find('iframe').attr('src', data.video.url + '?autoplay=1');
 			video_box.find('.video-single-title').text(data.video.name);
 			video_box.find('.views').text(data.video.views);

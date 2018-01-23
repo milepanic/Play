@@ -7,15 +7,15 @@ public class Comment {
 	private int id;
 	private String text;
 	private Date createdAt;
-	private User user;
-	private Video video;
+	private int userId;
+	private int videoId;
 	
-	public Comment(int id, String text, Date createdAt) {
+	public Comment(int id, String text, Date createdAt, int userId, int videoId) {
 		this.id = id;
 		this.text = text;
 		this.createdAt = createdAt;
-		//this.user = user;
-		//this.video = video;
+		this.userId = userId;
+		this.videoId = videoId;
 	}
 	
 	public int getId() {
@@ -36,16 +36,16 @@ public class Comment {
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
-	public User getUser() {
-		return user;
+	public int getUserId() {
+		return userId;
 	}
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
-	public Video getVideo() {
-		return video;
+	public int getVideoId() {
+		return videoId;
 	}
-	public void setVideo(Video video) {
-		this.video = video;
+	public void setVideoId(int videoId) {
+		this.videoId = videoId;
 	}
 }
