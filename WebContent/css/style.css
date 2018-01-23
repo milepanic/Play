@@ -1,0 +1,536 @@
+/*
+1. Header
+2. Sidebar
+3. Main Content (index.html)
+4. Video Box (index.html)
+5. Video Box (single.html)
+6. Right Sidebar (single.html)
+7. Profile Container (profile.html)
+8. Upload (upload.html)
+
+Last. Media Queries
+
+*/
+
+* {margin: 0; padding: 0;}
+
+body {
+	background-color: #E6E6E6;
+	overflow-x: hidden;
+}
+
+/* Header */
+nav {
+	height: 70px;
+	margin: 0 !important;
+	border: none !important;
+	border-radius: 0 !important;
+}
+
+.navbar-default {
+	background-color: #444;
+}
+
+.toggle-sidebar-btn {
+	background-color: inherit;
+	border: none;
+	color: #dedfe0;
+	width: 40px;
+	height: 40px;
+	margin-top: 10px;
+	float: left;
+	margin-left: 1em;
+	margin-right: 1em;
+	outline: none;
+}
+.toggle-sidebar-btn:hover,  .toggle-sidebar-btn:active, .toggle-sidebar-btn:focus {
+	background-color: inherit;
+	color: #dedfe0;
+}
+
+.navbar-brand {
+	padding: 0;
+}
+
+.logo {
+	margin-left: 3em;
+	height: 55px;
+	margin-top: 5px;
+}
+
+.navbar-form {
+	margin-top: 15px;
+	margin-left: 10em;
+}
+
+.stylish-input-group {
+	width: 350px;
+}
+
+.stylish-input-group .input-group-addon{
+    background: #525252 !important;
+    border: none;
+    color: #dedfe0;
+}
+.stylish-input-group .form-control {
+	border: none;
+	background-color: #525252;
+	color: #dedfe0;
+	font-size: 16px;
+}
+.stylish-input-group button {
+    border:0;
+    background:transparent;
+}
+
+.navbar-nav .dropdown-toggle {
+	margin-right: 3em;
+	margin-top: 7px;
+	color: #dedfe0 !important;
+}
+
+.navbar-nav .dropdown-toggle:focus {
+	background-color: #444 !important;
+}
+
+.navbar-nav .dropdown-menu {
+	margin-top: 12px !important;
+}
+
+.nav-margin {
+	height: 70px;
+}
+
+/* Sidebar */
+
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 250px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.margin-top {
+	margin-top: 25px;
+}
+
+.sidebar-nav li {
+    text-indent: 20px;
+    line-height: 40px;
+    border-bottom: 0.2px solid #e2e2e2;
+	width: 200px;
+	margin: 0 20px;
+}
+
+.sidebar-nav li a {
+    display: block;
+    text-decoration: none;
+    font-weight: bold;
+    color: #999999;
+}
+
+.sidebar-nav li a:hover {
+    text-decoration: none;
+    background: rgba(255,255,255,0.2);
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+    text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+    height: 65px;
+    font-size: 18px;
+    line-height: 60px;
+}
+
+.sidebar-nav > .sidebar-brand a {
+    color: #999999;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+    color: #fff;
+    background: none;
+}
+
+/* Main Content */
+#wrapper {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    max-width: 1400px;
+}
+
+#wrapper.toggled {
+    padding-left: 250px;
+}
+
+#sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    left: 250px;
+    width: 0;
+    height: 100%;
+    margin-left: -250px;
+    overflow-y: auto;
+    background: #F8F8F8;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    width: 250px;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    position: absolute;
+    padding: 15px;
+}
+
+#wrapper.toggled #page-content-wrapper {
+    position: absolute;
+    margin-right: -250px;
+}
+
+/* Video Box */
+.video-box {
+	width: 260px;
+	float: left;
+	margin: 0 10px 20px 0;
+}
+
+.thumbnail {
+	padding: 0;
+	margin: 0;
+}
+
+.info-box {
+	width: auto;
+	height: 120px;
+	background-color: #F8F8F8;
+	padding: 20px;
+}
+
+.video-name {
+	font-weight: bold;
+	font-size: 16px;
+	color: #282828;
+}
+.video-name:hover {
+	text-decoration: none;
+	color: #282828;
+}
+
+.channel-name {
+	font-size: 12px;
+	color: #898989;
+}
+.channel-name:hover {
+	text-decoration: none;
+	color: #898989;
+}
+
+.views, .date {
+	font-size: 11px;
+	color: #898989;
+}
+
+ /* Video Box Single */
+
+ .video-single-box {
+ 	width: 700px;
+ 	padding: 10px;
+ 	background-color: #F8F8F8;
+ 	border-radius: 3px;
+ 	float: left;
+ }
+
+.video-single-box iframe {
+	width: 680px; 
+	height: 415px;
+}
+
+.video-single-info {
+	padding-bottom: 15px;
+	border-bottom: 1px solid #e2e2e2;
+}
+
+.video-single-info-left {
+	width: 50%;
+	float: left;
+}
+
+.video-single-title {
+	font-weight: bold;
+}
+
+.video-single-views {
+	font-size: 14px;
+	color: #898989;
+}
+
+.video-single-info-right {
+	width: 50%;
+	float: right;
+}
+
+.votes {
+	float: right;
+	margin: 20px 40px 0 0;
+}
+
+.votes a {
+	color: #898989;
+	margin-left: 15px;
+	font-size: 16px;
+}
+.votes a:hover {
+	text-decoration: none;
+}
+
+.video-single-profile {
+	margin-top: 10px;
+}
+
+.video-single-profile a:hover {
+	text-decoration: none;
+}
+
+.float-left {
+	float: left;
+	width: 400px;
+}
+
+.profile-pic-small {
+	width: 60px;
+	height: 60px;
+	float: left;
+}
+
+.profile-name {
+	color: #000;
+	font-weight: bold;
+	font-size: 16px;
+	margin-left: 10px;
+}
+
+.profile-followers {
+	margin-left: 10px;
+	font-size: 12px;
+	color: #5c5d5e;
+}
+
+.follow-btn {
+	float: right;
+	margin: 10px 10px 0 0;
+}
+
+.video-single-description {
+	border-bottom: 1px solid #e2e2e2;
+}
+
+.video-single-description p {
+	font-size: 14px;
+	color: #626466;
+	padding: 10px;
+	margin-top: 20px;
+}
+
+.video-single-comments h5 {
+	color: #565656;
+	margin: 10px 0 20px 10px;
+}
+
+.write-comment {
+	width: 100%;
+	padding: 10px;
+	resize: none;
+	margin-bottom: 20px;
+}
+
+.comment {
+	width: 100%;
+	min-height: 80px;
+	margin-bottom: 10px;
+}
+
+.comment-name {
+	font-size: 16px;
+	font-weight: 590;
+	margin-left: 10px;
+	color: #333;
+}
+
+.comment-div {
+	margin: 7px 0 0 70px;
+}
+
+.comment-text {
+	font-size: 14px;
+	color: #444;
+}
+
+.load-more-btn {
+	padding: 10px;
+	background-color: #ddd;
+	border: none;
+	border-radius: 5px;
+	font-weight: bold;
+	color: #686666;
+	display: block;
+	margin: 0 auto;
+	font-size: 12px;
+}
+
+/* Right Sidebar */
+.right-sidebar-single {
+	width: 350px;
+	float: right;
+	background-color: #F8F8F8;
+	border-radius: 3px;
+	padding: 10px;
+}
+
+.single-video-box {
+	border-bottom: 1px solid #E2E2E2;
+	margin-bottom: 5px;
+}
+
+.single-video-img {
+	width: 330px;
+}
+
+.single-info-box {
+	padding: 10px;
+}
+
+/* Profile Page */
+.profile-container {
+	width: 100%;
+}
+
+.profile-header {
+	background: url("http://unsplash.it/1200x800") center center no-repeat;
+	background-size: cover;
+	height: 340px;
+	padding: 100px 10%;
+	color: #fff;
+}
+
+.profile-header-left {
+	float: left;
+	width: 50%;
+}
+
+.profile-pic-large {
+	width: 140px;
+	height: 140px;
+	float: left;
+}
+
+.profile-header-name {
+	font-weight: 800;
+	font-size: 22px;
+	float: left;
+	margin-left: 20px;
+}
+
+.profile-header-right {
+	float: right;
+	width: 50%;
+}
+
+.profile-info {
+	height: 80px;
+	padding: 20px;
+}
+
+.profile-info p {
+	font-size: 18px;
+	float: left;
+	margin-right: 20px;
+	padding-right: 20px;
+	border-right: 1px solid #fff;
+	text-align: center;
+}
+
+.profile-info p:last-child {
+	border: none;
+}
+
+.profile-info span {
+	font-size: 12px;
+	color: #b7b7b7;
+}
+
+.profile-action {
+	height: 80px;
+	padding: 20px;
+	margin-bottom: 20px;
+	background-color: #F8F8F8;
+}
+
+.profile-action ul {
+	float: left;
+}
+
+/* Upload */
+.upload-box {
+	background: #F8F8F8;
+	padding: 20px;
+	border-radius: 5px;
+}
+
+.upload-h3 {
+	padding: 0;
+	margin: 0 0 30px 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* Media Queries */
+
+@media(min-width:768px) {
+    #wrapper {
+        padding-left: 250px;
+    }
+
+    #wrapper.toggled {
+        padding-left: 0;
+    }
+
+    #sidebar-wrapper {
+        width: 250px;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        width: 0;
+    }
+
+    #page-content-wrapper {
+        padding: 20px;
+        position: relative;
+    }
+
+    #wrapper.toggled #page-content-wrapper {
+        position: relative;
+        margin-right: 0;
+    }
+}
