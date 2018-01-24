@@ -18,10 +18,9 @@ public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int id = Integer.parseInt(request.getParameter("id"));
+		String username = request.getParameter("username");
 		
-		System.out.println("ID korisnika je: " + id);
-		User user = UserDAO.get(id);
+		User user = UserDAO.get(username);
 		
 		Map<String, Object> data = new HashMap<>();
 		data.put("user", user);

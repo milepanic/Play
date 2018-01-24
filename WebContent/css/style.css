@@ -88,7 +88,18 @@ nav {
     background:transparent;
 }
 
-.navbar-nav .dropdown-toggle {
+.not-logged-in li a {
+	color: #fff !important;
+	font-family: 'Monaco';
+	font-size: 14px;
+	text-transform: uppercase;
+}
+
+.not-logged-in li a:hover {
+	color: #ccc !important;
+}
+
+.navbar-nav .dropdown-toggle, .not-logged-in {
 	margin-right: 3em;
 	margin-top: 7px;
 	color: #dedfe0 !important;
@@ -512,7 +523,13 @@ nav {
 	margin-bottom: 20px;
 }
 
+.login-bottom-text {
+	text-align: center;
+}
 
+.register-box button {
+	margin-bottom: 10px;
+}
 
 
 

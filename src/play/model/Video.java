@@ -22,7 +22,7 @@ public class Video {
 	
 	public Video(int id, String name, String url, String thumbnail, String description, 
 			Visibility visibility, boolean commentable,	 boolean voteable, 
-			boolean blocked, int views, Date createdAt) {
+			boolean blocked, int views, Date createdAt, User user) {
 		this.id = id;
 		this.name = name;
 		this.url = url;
@@ -34,6 +34,7 @@ public class Video {
 		this.blocked = blocked;
 		this.views = views;
 		this.createdAt = createdAt;
+		this.user = user;
 	}
 	
 	
@@ -43,14 +44,19 @@ public class Video {
 				+ "]";
 	}
 
-	public Video(int id, String name, String url, String thumbnail, Date createdAt) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.url = url;
-		this.thumbnail = thumbnail;
-		this.createdAt = createdAt;
-		//this.user = user;
+	public Video() {
+		id = 0;
+		name = "";
+		url = "";
+		thumbnail = "";
+		description = "";
+		visibility = Visibility.PUBLIC;
+		commentable = true;
+		voteable = true;
+		blocked = false;
+		views = 0;
+		createdAt = new Date();
+		user = null;
 	}
 
 	public int getId() {

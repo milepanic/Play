@@ -6,6 +6,7 @@ public class User {
 
 	public enum Role {USER, ADMIN};
 	
+	private int id;
 	private String username;
 	private String password;
 	private String firstName;
@@ -16,8 +17,9 @@ public class User {
 	private Role role;
 	private boolean banned;
 	
-	public User(String username, String password, String firstName, String lastName, 
+	public User(int id, String username, String password, String firstName, String lastName, 
 			String email, String description, Date registeredAt, boolean banned) {
+		this.id = id;
 		this.username = username;
 		this.password = password;
 		this.firstName = firstName;
@@ -30,6 +32,7 @@ public class User {
 	}
 	
 	public User() {
+		id = 0;
 		username = "";
 		password = "";
 		firstName = "";
@@ -41,6 +44,14 @@ public class User {
 		banned = false;
 	}
 
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	public String getUsername() {
 		return username;
 	}

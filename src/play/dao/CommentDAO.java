@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import play.model.Comment;
+import play.model.User;
 import play.model.Video;
 
 
@@ -25,7 +26,7 @@ public class CommentDAO {
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
 			pstmt.setString(index++, comment.getText());
-			pstmt.setInt(index++, comment.getUserId());
+			pstmt.setInt(index++, comment.getUser().getId());
 			pstmt.setInt(index++, comment.getVideoId());
 			System.out.println(pstmt);
 
@@ -64,8 +65,10 @@ public class CommentDAO {
 				Date createdAt = rset.getDate(index++);
 				int userId = rset.getInt(index++);
 				int videoId = rset.getInt(index++);
+				
+				User user = UserDAO.get(userId);
 	
-				Comment comment = new Comment(commentId, text, createdAt, userId, videoId);
+				Comment comment = new Comment(commentId, text, createdAt, user, videoId);
 				comments.add(comment);
 			}
 		} catch (SQLException ex) {

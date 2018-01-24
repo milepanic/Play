@@ -32,7 +32,7 @@ public class VideoDAO {
 			pstmt.setString(index++, video.getVisibility().toString());
 			pstmt.setBoolean(index++, video.isCommentable());
 			pstmt.setBoolean(index++, video.isVoteable());
-			pstmt.setInt(index++, 1);
+			pstmt.setInt(index++, video.getUser().getId());
 			System.out.println(pstmt);
 			
 			return pstmt.executeUpdate() == 1;
@@ -71,11 +71,17 @@ public class VideoDAO {
 				Date createdAt = rset.getDate(index++);
 				int user_id = rset.getInt(index++);
 				
-				//Query za trazenje usera
-				//String query2 = "SELECT * FROM users WHERE id = ?";
-				
+				User user = UserDAO.get(user_id);
 
-				Video video = new Video(id, name, url, thumbnail, createdAt);
+				Video video = new Video();
+				
+				video.setId(id);
+				video.SetName(name);
+				video.setUrl(url);
+				video.setThumbnail(thumbnail);
+				video.setCreatedAt(createdAt);
+				video.setUser(user);
+				
 				videos.add(video);
 			}
 		} catch (SQLException ex) {
@@ -118,10 +124,12 @@ public class VideoDAO {
 				int views = rset.getInt(index++);
 				Date createdAt = rset.getDate(index++);
 				int userId = rset.getInt(index++);
+				
+				User user = UserDAO.get(userId);
 
 				return new Video(videoId, name, url, thumbnail,
 						description, visibility, commentable, 
-						voteable, blocked, views, createdAt);
+						voteable, blocked, views, createdAt, user);
 			}
 		} catch (SQLException ex) {
 			System.out.println("Greska u SQL upitu!");

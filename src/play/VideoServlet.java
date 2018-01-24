@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import play.dao.UserDAO;
 import play.dao.VideoDAO;
+import play.model.User;
 import play.model.Video;
 import play.model.Video.Visibility;
 
@@ -44,6 +46,7 @@ public class VideoServlet extends HttpServlet {
 		Visibility visibility = Visibility.valueOf(request.getParameter("visibility"));
 		String commentable = request.getParameter("commentable");
 		String voteable = request.getParameter("voteable");
+		int user_id = Integer.parseInt(request.getParameter("user-id"));
 		
 		String[] parts = YoutubeUrl.split("=");
 		String id = parts[1];
@@ -67,8 +70,10 @@ public class VideoServlet extends HttpServlet {
 		boolean blocked = false;
 		int views = 0;
 		
+		User user = UserDAO.get(user_id);
+		
 		Video video = new Video(videoId, name, url, thumbnail, description, 
-				visibility, comm, vote, blocked, views, new Date());
+				visibility, comm, vote, blocked, views, new Date(), user);
 		
 		VideoDAO.create(video);
 		

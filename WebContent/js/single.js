@@ -13,6 +13,8 @@ $(document).ready(function() {
 			video_box.find('.video-single-title').text(data.video.name);
 			video_box.find('.views').text(data.video.views);
 			video_box.find('.date').text(data.video.createdAt);
+			video_box.find('.profile-url').attr('href', 'profile.html?username=' + data.video.user.username);
+			video_box.find('.profile-name').text(data.video.user.username);
 			video_box.find('.video-single-description > p').text(data.video.description);
 		});
 	}
@@ -25,8 +27,10 @@ $(document).ready(function() {
 				
 				$('.comments').append(
 					'<div class="comment">' +
-						'<img class="profile-pic-small" src="" alt="profile pic">' +
-						'<span class="comment-name">TODO: get user</span>' +
+						'<a href="profile.html?username=' + data.comments[i].user.username + '">' +
+							'<img class="profile-pic-small" src="img/dude.jpg" alt="profile pic">' +
+							'<span class="comment-name">' + data.comments[i].user.username + '</span>' +
+						'</a>' +
 						'<div class="comment-div">' +
 							'<p class="comment-text">' + data.comments[i].text + '</p>' +
 						'</div>' +
@@ -36,41 +40,6 @@ $(document).ready(function() {
 			}
 		});
 	}
-	
-	$('#comment-btn').on('click', function(e) {
-		e.preventDefault();
-		
-		var text = $('.write-comment').val();
-		
-		var params = {
-			'text': text,
-			'user_id': 1,
-			'video_id': id
-		}
-		
-		$.ajax({
-			method: 'POST',
-			url: 'CommentServlet',
-			data: params,
-			success: function(data) {
-				$('.write-comment').val('');
-				
-				$('.comments').append(
-						'<div class="comment">' +
-							'<img class="profile-pic-small" src="" alt="profile pic">' +
-							'<span class="comment-name">TODO: get user</span>' +
-							'<div class="comment-div">' +
-								'<p class="comment-text">' + data.comment.text + '</p>' +
-							'</div>' +
-						'</div>'
-					);
-			},
-			error: function() {
-				alert('error');
-			}
-		});
-		
-	});
 	
 	getVideo();
 	getComments();

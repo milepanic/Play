@@ -2,7 +2,6 @@ package play;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -13,18 +12,23 @@ import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import play.dao.VideoDAO;
 import play.model.User;
-import play.model.Video;
 
-public class IndexServlet extends HttpServlet {
+public class SessionServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<Video> videos = VideoDAO.getAll();
+		HttpSession session = request.getSession();
+		User loggedInUser = (User) session.getAttribute("loggedInUser");
 		
 		Map<String, Object> data = new HashMap<>();
-		data.put("videos", videos);
+		
+		if (loggedInUser == null) 
+			data.put("status", "unauthenticated");
+		else {
+			data.put("status", "logged in");
+			data.put("auth", loggedInUser);
+		}
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonData = mapper.writeValueAsString(data);
@@ -33,10 +37,9 @@ public class IndexServlet extends HttpServlet {
 		response.setContentType("application/json");
 		response.getWriter().write(jsonData);
 	}
-
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
-
 }

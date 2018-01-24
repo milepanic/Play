@@ -15,7 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import play.dao.CommentDAO;
+import play.dao.UserDAO;
 import play.model.Comment;
+import play.model.User;
 import play.model.Video;
 
 public class CommentServlet extends HttpServlet {
@@ -45,7 +47,9 @@ public class CommentServlet extends HttpServlet {
 		int commentId = CommentDAO.last() + 1;
 		System.out.println(commentId);
 		
-		Comment comment = new Comment(commentId, text, new Date(), userId, videoId);
+		User user = UserDAO.get(userId);
+		
+		Comment comment = new Comment(commentId, text, new Date(), user, videoId);
 		
 		CommentDAO.add(comment);
 		
