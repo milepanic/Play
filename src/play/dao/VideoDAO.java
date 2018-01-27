@@ -95,6 +95,57 @@ public class VideoDAO {
 		return videos;
 	}
 	
+	// proslijediti i korisnika
+	public static List<Video> getWhereUser(int id) {
+		List<Video> videos = new ArrayList<>();
+		Connection conn = ConnectionManager.getConnection();
+
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			String query = "SELECT * "
+					+ "FROM videos WHERE user_id = ?";
+
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			pstmt.setInt(index++, id);
+			System.out.println(pstmt);
+
+			rset = pstmt.executeQuery();
+			while (rset.next()) {
+				index = 1;
+				int videoId = rset.getInt(index++);
+				String name = rset.getString(index++);
+				String url = rset.getString(index++);
+				String thumbnail = rset.getString(index++);
+				String description = rset.getString(index++);
+				Visibility visibility = Visibility.valueOf(rset.getString(index++));
+				boolean commentable = rset.getBoolean(index++);
+				boolean voteable = rset.getBoolean(index++);
+				boolean blocked = rset.getBoolean(index++);
+				int views = rset.getInt(index++);
+				Date createdAt = rset.getDate(index++);
+				int userId = rset.getInt(index++);
+				
+				User user = UserDAO.get(userId);
+
+				Video video = new Video(videoId, name, url, thumbnail,
+						description, visibility, commentable, 
+						voteable, blocked, views, createdAt, user);
+				
+				videos.add(video);
+			}
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+			try {rset.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+
+		return videos;
+	}
+	
 	public static Video get(int id) {
 		Connection conn = ConnectionManager.getConnection();
 
@@ -141,6 +192,8 @@ public class VideoDAO {
 
 		return null;
 	}
+	
+	
 	
 	public static int last() {
 		Connection conn = ConnectionManager.getConnection();

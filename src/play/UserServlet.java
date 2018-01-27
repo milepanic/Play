@@ -2,6 +2,7 @@ package play;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -12,7 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import play.dao.UserDAO;
+import play.dao.VideoDAO;
 import play.model.User;
+import play.model.Video;
 
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -21,9 +24,11 @@ public class UserServlet extends HttpServlet {
 		String username = request.getParameter("username");
 		
 		User user = UserDAO.get(username);
+		List<Video> videos = VideoDAO.getWhereUser(user.getId());
 		
 		Map<String, Object> data = new HashMap<>();
 		data.put("user", user);
+		data.put("videos", videos);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonData = mapper.writeValueAsString(data);
@@ -34,8 +39,22 @@ public class UserServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		String username = request.getParameter("username");
+		String firstName = request.getParameter("firstname");
+		String lastName = request.getParameter("lastname");
+		String email = request.getParameter("email");
+		String description = request.getParameter("description");
+		
+		User user = UserDAO.get(username);
+		
+		user.setFirstName(firstName);
+		user.setLastName(lastName);
+		user.setEmail(email);
+		user.setDescription(description);
+		
+		UserDAO.update(user);
+		
+		response.sendRedirect("./edit-profile.html?username=" + user.getUsername());
 	}
-
+	
 }

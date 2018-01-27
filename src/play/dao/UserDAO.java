@@ -122,4 +122,32 @@ public class UserDAO {
 
 		return null;
 	}
+	
+	public static boolean update(User user) {
+		Connection conn = ConnectionManager.getConnection();
+
+		PreparedStatement pstmt = null;
+		try {
+			String query = "UPDATE users SET firstname = ?, lastname = ?, email = ?, description = ? WHERE username = ?";
+
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			
+			pstmt.setString(index++, user.getFirstName());
+			pstmt.setString(index++, user.getLastName());
+			pstmt.setString(index++, user.getEmail());
+			pstmt.setString(index++, user.getDescription());
+			pstmt.setString(index++, user.getUsername());
+			System.out.println(pstmt);
+
+			return pstmt.executeUpdate() == 1;
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+
+		return false;
+	}
 }

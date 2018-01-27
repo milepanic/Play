@@ -8,6 +8,7 @@
 7. Profile Container (profile.html)
 8. Upload (upload.html)
 9. Register (register.html)
+10. About user (about.html)
 
 Last. Media Queries
 
@@ -531,7 +532,24 @@ nav {
 	margin-bottom: 10px;
 }
 
+.upload-box ul li {
+	list-style: none;
+	border-bottom: 1px solid #d6d6d6;
+}
 
+.upload-box ul li:last-child {
+	border: none;
+}
+
+.upload-box ul li h4 {
+	color: #848484;
+	font-weight: bold;
+}
+
+.upload-box h4 span {
+	font-weight: normal;
+	color: #383838;
+}
 
 
 
