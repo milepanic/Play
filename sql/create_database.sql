@@ -15,8 +15,11 @@ CREATE TABLE users (
 	role ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER'
 );
 
-INSERT INTO users (username, password, email) 
-	VALUES ('admin', 'admin', 'admin@admin.com');
+INSERT INTO users (username, password, email) VALUES 
+		('admin', 'admin', 'admin@admin.com'),
+		('user', 'admin', 'user@user.com'),
+		('user2', 'admin', 'user2@user.com'),
+		('user3', 'admin', 'user3@user.com');
 	
 CREATE TABLE videos (
 	id INT AUTO_INCREMENT,
@@ -35,8 +38,11 @@ CREATE TABLE videos (
 	FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-INSERT INTO videos (name, url, thumbnail, user_id)
-	VALUES ('Marshall Jefferson - Floating', 'https://www.youtube.com/embed/EGuiXTUQeH4', 'https://img.youtube.com/vi/EGuiXTUQeH4/0.jpg', 1);
+INSERT INTO videos (name, url, thumbnail, user_id) VALUES 
+	('Marshall Jefferson - Floating', 'https://www.youtube.com/embed/EGuiXTUQeH4', 'https://img.youtube.com/vi/EGuiXTUQeH4/0.jpg', 1),
+	('Dave Brubeck - Take Five', 'https://www.youtube.com/embed/vmDDOFXSgAs', 'https://img.youtube.com/vi/vmDDOFXSgAs/0.jpg', 2),
+	('Ryo Fukui - Scenery 1976 (FULL ALBUM)', 'https://www.youtube.com/embed/Hrr3dp7zRQY', 'https://img.youtube.com/vi/Hrr3dp7zRQY/0.jpg', 3),
+	('Blues Brothers - Sweet Home Chicago', 'https://www.youtube.com/embed/79vCiXg3njY', 'https://img.youtube.com/vi/79vCiXg3njY/0.jpg', 4);
 	
 CREATE TABLE comments (
 	id INT AUTO_INCREMENT,
@@ -52,3 +58,20 @@ CREATE TABLE comments (
 INSERT INTO comments (text, user_id, video_id)
 	VALUES ('Naci todor postavio ovaj komentar', 1, 1);
 	
+CREATE TABLE follow (
+	follower_id INT,
+	user_id INT,
+	FOREIGN KEY (follower_id) REFERENCES users(id),
+	FOREIGN KEY (user_id) REFERENCES users(id)
+);
+	
+CREATE TABLE votes (
+	id INT AUTO_INCREMENT,
+	user_id INT,
+	video_id INT,
+	vote BOOLEAN NOT NULL,
+	created_at TIMESTAMP,
+	PRIMARY KEY (id),
+	FOREIGN KEY (user_id) REFERENCES users(id),
+	FOREIGN KEY (video_id) REFERENCES videos(id)
+);

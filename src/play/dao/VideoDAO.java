@@ -104,7 +104,7 @@ public class VideoDAO {
 		ResultSet rset = null;
 		try {
 			String query = "SELECT * "
-					+ "FROM videos WHERE user_id = ?";
+					+ "FROM videos WHERE user_id = ? ORDER BY created_at DESC";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;

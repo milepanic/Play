@@ -87,4 +87,14 @@
     <servlet-name>SessionServlet</servlet-name>
     <url-pattern>/SessionServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>FollowServlet</display-name>
+    <servlet-name>FollowServlet</servlet-name>
+    <servlet-class>play.FollowServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FollowServlet</servlet-name>
+    <url-pattern>/FollowServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

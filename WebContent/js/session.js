@@ -1,5 +1,4 @@
-$(document).ready(function () {
-	
+//$(document).ready(function () {
 	var auth = null;
 
 	// Checks if user is logged in
@@ -52,7 +51,7 @@ $(document).ready(function () {
 			window.location.replace('index.html');
 		});
 	});
-	
+	/*
 	// Posting comments
 	$('#comment-btn').on('click', function(e) {
 		e.preventDefault();
@@ -97,6 +96,33 @@ $(document).ready(function () {
 		});
 	});
 	
-	
-});
-
+	// Follow - Unfollow
+	$('.follow-edit').delegate('.follow-btn', 'click', function (e) {
+		e.preventDefault();
+		
+		if (auth == null) {
+			if (confirm("You must be logged in to follow a user. \nDo you want to log in now?"))
+				window.location.replace('login.html');
+			else
+				return;
+		}
+		
+		if (('.follow-btn').hasClass('btn-primary')) {
+			$('.follow-btn').removeClass('btn-primary');
+			$('.follow-btn').addClass('btn-default');
+			$('.follow-btn').text('Following');
+		}
+		
+		var userId = 1;
+		
+		var data = {
+			follower_id: auth.id,
+			user_id: userId
+		}
+		
+		$.post('FollowServlet', data, function () {
+			alert('a');
+		})
+	});
+	*/
+//});

@@ -4,7 +4,12 @@ $(document).ready(function() {
 	
 	function getVideos() {
 
-		$.get('IndexServlet', function(data) {
+		var data = {
+			page: "following",
+			userId: 1
+		}
+		
+		$.get('FollowServlet', data, function(data) {
 			
 			for(i in data.videos) {
 				
