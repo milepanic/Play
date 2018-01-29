@@ -25,7 +25,8 @@ public class FollowServlet extends HttpServlet {
 		// First condition is to get all videos the user is following
 		// Second is to check on single.html if user is following video's author
 		if (page.contentEquals("following")) {
-			List<Video> videos = FollowDAO.getVideos(1);
+			int userId = Integer.parseInt(request.getParameter("userId"));
+			List<Video> videos = FollowDAO.getVideos(userId);
 			
 			Map<String, Object> data = new HashMap<>();
 			data.put("videos", videos);

@@ -1,19 +1,29 @@
+function proceed(data) {
+	
+	var id = window.location.search.slice(1).split('&')[0].split('=')[1];
+	
+	if(data.auth && data.auth.id == id)
+		$('.profile-action').append('<a class="btn btn-default follow-btn"' +
+				' href="edit-profile.html?id=' + id + '">Edit Profile</a>');
+	else
+		$('.profile-action').append('<button class="btn btn-primary follow-btn">+ Follow</button>');
+}
+
 $(document).ready(function() {
+	
+	$("head").append('<script type="text/javascript" src="js/session.js"></script>');
 	
 	function getUser() {
 		
-		var username = window.location.search.slice(1).split('&')[0].split('=')[1];
+		var id = window.location.search.slice(1).split('&')[0].split('=')[1];
 		var profile = $('.profile-container');
 		
-		$.get('UserServlet', {'username': username}, function(data) {
-			
-			console.log(data);
+		$.get('UserServlet', {'id': id}, function(data) {
 			
 			$(document).attr("title", data.user.username + " - Play");
 			
-			$('.profile-videos').attr('href', "profile.html?username=" + data.user.username);
-			$('.profile-about').attr('href', "about.html?username=" + data.user.username);
-			$('.profile-edit').attr('href', "edit-profile.html?username=" + data.user.username);
+			$('.profile-videos').attr('href', "profile.html?id=" + data.user.id);
+			$('.profile-about').attr('href', "about.html?id=" + data.user.id);
 			
 			profile.find('.profile-header-name').text(data.user.username);
 			profile.find('.profile-description').text(data.user.description);
@@ -57,16 +67,22 @@ $(document).ready(function() {
 				$('#email').val(data.user.email);
 				$('#description').val(data.user.description);
 				
+				
+				
 				$("#submit").on('click', function (e) {
 					e.preventDefault();
 					
-					$.ajax({
-						url: 'UserServlet',
-						method: 'POST',
-						success: function () {
-							alert('a');
-						}
-					})
+					var data = {
+						username: $('#username').val(),
+						firstname: $('#firstname').val(),
+						lastname: $('#lastname').val(),
+						email: $('#email').val(),
+						description: $('#description').val()
+					}
+					
+					$.post('UserServlet', data, function() {
+						window.location.replace('about.html?id=' + id);
+					});
 				})
 			}
 		});

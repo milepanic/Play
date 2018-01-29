@@ -111,9 +111,7 @@
                         		<ul class="nav nav-pills">
 									<li><a class="profile-videos" href="profile.html">Videos</a></li>
 									<li><a class="profile-about" href="about.html">About</a></li>
-									<li class="active"><a class="profile-edit" href="edit-profile.html">Edit Profile</a></li>
 								</ul>
-								<button class="btn btn-primary follow-btn">+ Follow</button>
                         	</div>
                         	
 			                <div class="row">
@@ -123,7 +121,7 @@
                     
 				                    	<h3 class="upload-h3">Edit Profile</h3>
 				                    	
-				                        <form action="UserServlet" method="POST">
+				                        <form>
 											<div class="form-group">
 										    	<label for="username">Username</label>
 										    	<input type="text" name="username" id="username" class="form-control">
@@ -155,7 +153,7 @@
 										  	<label class="btn btn-default col-md-12 margin-bottom">
 												<input type="file" name="image">
 											</label>
-										  	<button type="submit" class="btn btn-primary col-lg-12">Edit</button>
+										  	<button type="submit" id="submit" class="btn btn-primary col-lg-12">Edit</button>
 										</form>
 										
 										<div class="clearfix"></div>
@@ -179,8 +177,6 @@
 	<script src="js/jquery-3.2.1.min.js"></script>
 	<!-- Bootstrap JS -->
 	<script src="js/bootstrap.min.js"></script>
-	<!-- Custom JS -->
-    <script src="js/custom.js"></script>
     
     <script src="js/user.js"></script>
 </body>

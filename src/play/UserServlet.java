@@ -21,10 +21,10 @@ public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String username = request.getParameter("username");
+		int id = Integer.parseInt(request.getParameter("id"));
 		
-		User user = UserDAO.get(username);
-		List<Video> videos = VideoDAO.getWhereUser(user.getId());
+		User user = UserDAO.get(id);
+		List<Video> videos = VideoDAO.getWhereUser(id);
 		
 		Map<String, Object> data = new HashMap<>();
 		data.put("user", user);
@@ -53,8 +53,6 @@ public class UserServlet extends HttpServlet {
 		user.setDescription(description);
 		
 		UserDAO.update(user);
-		
-		response.sendRedirect("./edit-profile.html?username=" + user.getUsername());
 	}
 	
 }

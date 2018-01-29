@@ -44,9 +44,9 @@ public class VideoServlet extends HttpServlet {
 		String name = request.getParameter("name");
 		String description = request.getParameter("description");
 		Visibility visibility = Visibility.valueOf(request.getParameter("visibility"));
-		String commentable = request.getParameter("commentable");
-		String voteable = request.getParameter("voteable");
-		int user_id = Integer.parseInt(request.getParameter("user-id"));
+		boolean commentable = Boolean.parseBoolean(request.getParameter("commentable"));
+		boolean voteable = Boolean.parseBoolean(request.getParameter("voteable"));
+		int userId = Integer.parseInt(request.getParameter("userId"));
 		
 		String[] parts = YoutubeUrl.split("=");
 		String id = parts[1];
@@ -54,30 +54,26 @@ public class VideoServlet extends HttpServlet {
 		int videoId = VideoDAO.last() + 1;
 		String url = "https://www.youtube.com/embed/" + id;
 		String thumbnail = "https://img.youtube.com/vi/" + id + "/0.jpg";
-		
-		boolean comm = false;
-		
-		if (commentable != null) {
-			comm = true;
-		}
-		
-		boolean vote = false;
-		
-		if (voteable != null) {
-			vote = true;
-		}
-		
+
 		boolean blocked = false;
 		int views = 0;
 		
-		User user = UserDAO.get(user_id);
+		User user = UserDAO.get(userId);
 		
 		Video video = new Video(videoId, name, url, thumbnail, description, 
-				visibility, comm, vote, blocked, views, new Date(), user);
+				visibility, commentable, voteable, blocked, views, new Date(), user);
 		
 		VideoDAO.create(video);
 		
-		response.sendRedirect("http://localhost:8080/Play/single.html?id=" + videoId);
+		Map<String, Object> data = new HashMap<>();
+		data.put("id", videoId);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonData = mapper.writeValueAsString(data);
+		System.out.println(jsonData);
+
+		response.setContentType("application/json");
+		response.getWriter().write(jsonData);
 	}
 
 }

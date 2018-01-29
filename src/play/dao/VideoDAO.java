@@ -81,6 +81,7 @@ public class VideoDAO {
 				video.setUrl(url);
 				video.setThumbnail(thumbnail);
 				video.setCreatedAt(createdAt);
+				System.out.println(video.getCreatedAt());
 				video.setUser(user);
 				
 				videos.add(video);

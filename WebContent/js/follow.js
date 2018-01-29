@@ -1,12 +1,11 @@
-$(document).ready(function() {
-	
-	$("head").append('<script type="text/javascript" src="js/session.js"></script>');
+function proceed(data) {
+	var auth = data.auth;
 	
 	function getVideos() {
 
 		var data = {
 			page: "following",
-			userId: 1
+			userId: auth.id
 		}
 		
 		$.get('FollowServlet', data, function(data) {
@@ -35,4 +34,11 @@ $(document).ready(function() {
 	}
 	
 	getVideos();
+}
+
+$(document).ready(function() {
+	
+	$("head").append('<script type="text/javascript" src="js/session.js"></script>');
+	
+	
 });
