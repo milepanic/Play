@@ -1,3 +1,67 @@
+function proceed(data) {
+	var id = window.location.search.slice(1).split('&')[0].split('=')[1];
+	
+	follows(data.auth, id);
+}
+
+//Follow btn, follow user
+function follows(auth, id) {
+	
+	//follow/following btn or edit video
+	if(auth.id == id) {
+		$('.follow-edit').append('<a href="edit-video.html?id=' + id + '"' +
+				'class="btn btn-default follow-btn">Edit Video</a>');
+	} else {
+		var data = {
+			page: "single",
+			follower_id: auth.id,
+			user_id: id
+		}
+		
+		$.get('FollowServlet', data, function(data) {
+			
+			if(data.follow)
+				$('.follow-edit').append('<button class="btn btn-default follow-btn">Following</button>');
+			else
+				$('.follow-edit').append('<button class="btn btn-primary follow-btn">+ Follow</button>');
+		});
+		
+		
+	}
+		
+	// Follow - Unfollow
+	$('.follow-edit').delegate('.follow-btn', 'click', function (e) {
+		e.preventDefault();
+		
+		if (auth == null) {
+			if (confirm("You must be logged in to follow a user. \nDo you want to log in now?"))
+				window.location.replace('login.html');
+			else
+				return;
+		}
+		
+		if (auth.id == id)
+			return;
+		
+		if ($('.follow-btn').hasClass('btn-primary')) {
+			$('.follow-btn').removeClass('btn-primary');
+			$('.follow-btn').addClass('btn-default');
+			$('.follow-btn').text('Following');
+		} else {
+			$('.follow-btn').removeClass('btn-default');
+			$('.follow-btn').addClass('btn-primary');
+			$('.follow-btn').text('+ Follow');
+		}
+		
+		var data = {
+			follower_id: auth.id,
+			user_id: id
+		}
+		
+		$.post('FollowServlet', data);
+	});
+}
+
 $(document).ready(function() {
 	
 	$("head").append('<script type="text/javascript" src="js/session.js"></script>');
@@ -24,11 +88,6 @@ $(document).ready(function() {
 		});
 	}
 	
-	// checks if user follows the author
-	function follows() {
-		
-	}
-	
 	function getComments() {
 		
 		$.get('CommentServlet', {'id': id}, function(data) {
@@ -51,50 +110,11 @@ $(document).ready(function() {
 		});
 	}
 	
-	$('.follow-edit').append(
-		'<button class="btn btn-primary follow-btn">+ Follow</button>'
-	);
-	
-	// Follow - Unfollow
-	$('.follow-edit').delegate('.follow-btn', 'click', function (e) {
-		e.preventDefault();
-		
-		if (auth == null) {
-			if (confirm("You must be logged in to follow a user. \nDo you want to log in now?"))
-				window.location.replace('login.html');
-			else
-				return;
-		}
-		
-		if (auth.id == userId)
-			return;
-		
-		if ($('.follow-btn').hasClass('btn-primary')) {
-			$('.follow-btn').removeClass('btn-primary');
-			$('.follow-btn').addClass('btn-default');
-			$('.follow-btn').text('Following');
-		} else {
-			$('.follow-btn').removeClass('btn-default');
-			$('.follow-btn').addClass('btn-primary');
-			$('.follow-btn').text('+ Follow');
-		}
-		
-		var data = {
-			page: "single",
-			follower_id: auth.id,
-			user_id: userId
-		}
-		
-		$.post('FollowServlet', data, function () {
-			
-		})
-	});
-	
 	//Commenting
 	$('#comment-btn').on('click', function(e) {
 		e.preventDefault();
 		
-		if (auth == null) {
+		if (eventAuth == null) {
 			if (confirm("You must be logged in to leave a comment. \nDo you want to log in now?"))
 				window.location.replace('login.html');
 			else
@@ -105,7 +125,7 @@ $(document).ready(function() {
 		var id = window.location.search.slice(1).split('&')[0].split('=')[1];
 		var params = {
 			'text': text,
-			'user_id': auth.id,
+			'user_id': eventAuth.id,
 			'video_id': id
 		}
 		
@@ -118,9 +138,9 @@ $(document).ready(function() {
 				
 				$('.comments').append(
 						'<div class="comment">' +
-							'<a href="profile.html?username=' + auth.username + '">' +
+							'<a href="profile.html?username=' + eventAuth.username + '">' +
 								'<img class="profile-pic-small" src="img/dude.jpg" alt="profile pic">' +
-								'<span class="comment-name">' + auth.username + '</span>' +
+								'<span class="comment-name">' + eventAuth.username + '</span>' +
 							'</a>' +
 							'<div class="comment-div">' +
 								'<p class="comment-text">' + data.comment.text + '</p>' +

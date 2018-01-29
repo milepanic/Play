@@ -4,9 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import play.model.User;
+import play.model.User.Role;
 
 public class UserDAO {
 	
@@ -15,8 +18,8 @@ public class UserDAO {
 
 		PreparedStatement pstmt = null;
 		try {
-			String query = "INSERT INTO users (username, password, firstname, lastname, email, description) "
-					+ "VALUES (?, ?, ?, ?, ?, ?)";
+			String query = "INSERT INTO users (username, password, firstname, lastname, email, description, role) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
@@ -26,6 +29,7 @@ public class UserDAO {
 			pstmt.setString(index++, user.getLastName());
 			pstmt.setString(index++, user.getEmail());
 			pstmt.setString(index++, user.getPassword());
+			pstmt.setString(index++, user.getRole().toString());
 			System.out.println(pstmt);
 
 			return pstmt.executeUpdate() == 1;
@@ -39,14 +43,59 @@ public class UserDAO {
 		return false;
 	}
 	
+	public static List<User> getAll() {
+		List<User> users = new ArrayList<>();
+
+		Connection conn = ConnectionManager.getConnection();
+
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			String query = "SELECT id, username, firstname, lastname, email, role "
+					+ "FROM users ORDER BY registered_at DESC";
+
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			System.out.println(pstmt);
+
+			rset = pstmt.executeQuery();
+			while (rset.next()) {
+				index = 1;
+				int id = rset.getInt(index++);
+				String username = rset.getString(index++);
+				String firstName = rset.getString(index++);
+				String lastName = rset.getString(index++);
+				String email = rset.getString(index++);
+				Role role = Role.valueOf(rset.getString(index++));
+
+				User user = new User();
+				
+				user.setUsername(username);
+				user.setFirstName(firstName);
+				user.setLastName(lastName);
+				user.setEmail(email);
+				user.setRole(role);
+				
+				users.add(user);
+			}
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+			try {rset.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+		
+		return users;
+	}
+	
 	public static User get(int user_id) {
 		Connection conn = ConnectionManager.getConnection();
 
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		try {
-			String query = "SELECT * "
-					+ "FROM users WHERE id = ?";
+			String query = "SELECT * FROM users WHERE id = ?";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
@@ -64,11 +113,11 @@ public class UserDAO {
 				String email = rset.getString(index++);
 				String description = rset.getString(index++);
 				Date registeredAt = rset.getDate(index++);
-				//Role role = Role.valueOf(rset.getString(index++));
 				boolean banned = rset.getBoolean(index++);
+				Role role = Role.valueOf(rset.getString(index++));
 				
 				return new User(id, username, password, firstName, lastName, email,
-						description, registeredAt, banned);
+						description, registeredAt, banned, role);
 			}
 		} catch (SQLException ex) {
 			System.out.println("Greska u SQL upitu!");
@@ -87,8 +136,7 @@ public class UserDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		try {
-			String query = "SELECT * "
-					+ "FROM users WHERE username = ?";
+			String query = "SELECT * FROM users WHERE username = ?";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
@@ -106,11 +154,11 @@ public class UserDAO {
 				String email = rset.getString(index++);
 				String description = rset.getString(index++);
 				Date registeredAt = rset.getDate(index++);
-				//Role role = Role.valueOf(rset.getString(index++));
 				boolean banned = rset.getBoolean(index++);
+				Role role = Role.valueOf(rset.getString(index++));
 				
 				return new User(id, username, password, firstName, lastName, email,
-						description, registeredAt, banned);
+						description, registeredAt, banned, role);
 			}
 		} catch (SQLException ex) {
 			System.out.println("Greska u SQL upitu!");

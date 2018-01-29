@@ -55,7 +55,8 @@ public class VideoDAO {
 		ResultSet rset = null;
 		try {
 			String query = "SELECT id, name, url, thumbnail, created_at, user_id "
-					+ "FROM videos WHERE visibility = 'PUBLIC' AND blocked = false";
+					+ "FROM videos WHERE visibility = 'PUBLIC' AND blocked = false "
+					+ "ORDER BY created_at DESC";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
@@ -152,8 +153,7 @@ public class VideoDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		try {
-			String query = "SELECT * "
-					+ "FROM videos WHERE id = ?";
+			String query = "SELECT * FROM videos WHERE id = ?";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;

@@ -95,7 +95,7 @@ public class FollowDAO {
 				List<Video> userVideos = VideoDAO.getWhereUser(userId);
 				videos.addAll(i++, userVideos);
 			}
-			
+			System.out.println("videos lists in list" + videos);
 			return videos;
 		} catch (SQLException ex) {
 			System.out.println("Greska u SQL upitu!");

@@ -22,6 +22,8 @@ public class FollowServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String page = request.getParameter("page");
 		
+		// First condition is to get all videos the user is following
+		// Second is to check on single.html if user is following video's author
 		if (page.contentEquals("following")) {
 			List<Video> videos = FollowDAO.getVideos(1);
 			

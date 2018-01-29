@@ -3,7 +3,7 @@ CREATE SCHEMA play DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE play;
 
 CREATE TABLE users (
-	id INT AUTO_INCREMENT PRIMARY KEY,
+	id INT AUTO_INCREMENT,
 	username VARCHAR(30) NOT NULL,
 	password VARCHAR(120) NOT NULL,
 	firstname VARCHAR(120),
@@ -12,18 +12,19 @@ CREATE TABLE users (
 	description VARCHAR(1000),
 	registered_at TIMESTAMP,
 	banned BOOLEAN DEFAULT false,
-	role ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER'
+	role ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER',
+	PRIMARY KEY(id)
 );
 
-INSERT INTO users (username, password, email) VALUES 
-		('admin', 'admin', 'admin@admin.com'),
-		('user', 'admin', 'user@user.com'),
-		('user2', 'admin', 'user2@user.com'),
-		('user3', 'admin', 'user3@user.com');
+INSERT INTO users (username, password, email, role) VALUES 
+		('admin', 'admin', 'admin@admin.com', 'ADMIN'),
+		('user', 'admin', 'user@user.com', 'USER'),
+		('user2', 'admin', 'user2@user.com', 'USER'),
+		('user3', 'admin', 'user3@user.com', 'USER');
 	
 CREATE TABLE videos (
 	id INT AUTO_INCREMENT,
-	name VARCHAR(50) NOT NULL,
+	name VARCHAR(200) NOT NULL,
 	url VARCHAR(100) NOT NULL,
 	thumbnail VARCHAR(100) NOT NULL,
 	description VARCHAR(1000),

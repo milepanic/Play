@@ -47,7 +47,7 @@ $(document).ready(function() {
 				$('.about-last-name').text(data.user.lastName);
 				$('.about-email').text(data.user.email);
 				$('.about-date').text(data.user.registeredAt);
-				$('.about-type').text("TODO");
+				$('.about-type').text(data.user.role);
 				
 			} else if (window.location.pathname == '/Play/edit-profile.html') {
 				
