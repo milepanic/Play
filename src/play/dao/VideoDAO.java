@@ -223,4 +223,32 @@ public class VideoDAO {
 		
 		return 0;
 	}
+	
+	public static boolean update(Video video) {
+		Connection conn = ConnectionManager.getConnection();
+
+		PreparedStatement pstmt = null;
+		try {
+			String query = "UPDATE videos SET description = ?, visibility = ?, commentable = ?, voteable = ? WHERE id = ?";
+
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			
+			pstmt.setString(index++, video.getDescription());
+			pstmt.setString(index++, video.getVisibility().toString());
+			pstmt.setBoolean(index++, video.isCommentable());
+			pstmt.setBoolean(index++, video.isVoteable());
+			pstmt.setInt(index++, video.getId());
+			System.out.println(pstmt);
+
+			return pstmt.executeUpdate() == 1;
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+
+		return false;
+	}
 }

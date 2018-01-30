@@ -40,40 +40,58 @@ public class VideoServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String YoutubeUrl = request.getParameter("url");
-		String name = request.getParameter("name");
+		String type = request.getParameter("type");
+		
 		String description = request.getParameter("description");
 		Visibility visibility = Visibility.valueOf(request.getParameter("visibility"));
-		boolean commentable = Boolean.parseBoolean(request.getParameter("commentable"));
-		boolean voteable = Boolean.parseBoolean(request.getParameter("voteable"));
-		int userId = Integer.parseInt(request.getParameter("userId"));
+		boolean commentable = Boolean.valueOf(request.getParameter("commentable"));
+		System.out.println("Commentable is " + commentable);
+		boolean voteable = Boolean.valueOf(request.getParameter("voteable"));
 		
-		String[] parts = YoutubeUrl.split("=");
-		String id = parts[1];
-		
-		int videoId = VideoDAO.last() + 1;
-		String url = "https://www.youtube.com/embed/" + id;
-		String thumbnail = "https://img.youtube.com/vi/" + id + "/0.jpg";
+		if(type.contentEquals("edit")) {
+			int id = Integer.parseInt(request.getParameter("id"));
+			
+			Video video = VideoDAO.get(id);
+			video.setDescription(description);
+			video.setVisibility(visibility);
+			video.setCommentable(commentable);
+			video.setVoteable(voteable);
+			
+			VideoDAO.update(video);
+			return;
+			// obrisati else
+		} else {
+			String YoutubeUrl = request.getParameter("url");
+			String name = request.getParameter("name");
+			int userId = Integer.parseInt(request.getParameter("userId"));
+			
+			String[] parts = YoutubeUrl.split("=");
+			String id = parts[1];
+			
+			int videoId = VideoDAO.last() + 1;
+			String url = "https://www.youtube.com/embed/" + id;
+			String thumbnail = "https://img.youtube.com/vi/" + id + "/0.jpg";
 
-		boolean blocked = false;
-		int views = 0;
-		
-		User user = UserDAO.get(userId);
-		
-		Video video = new Video(videoId, name, url, thumbnail, description, 
-				visibility, commentable, voteable, blocked, views, new Date(), user);
-		
-		VideoDAO.create(video);
-		
-		Map<String, Object> data = new HashMap<>();
-		data.put("id", videoId);
-		
-		ObjectMapper mapper = new ObjectMapper();
-		String jsonData = mapper.writeValueAsString(data);
-		System.out.println(jsonData);
+			boolean blocked = false;
+			int views = 0;
+			
+			User user = UserDAO.get(userId);
+			
+			Video video = new Video(videoId, name, url, thumbnail, description, 
+					visibility, commentable, voteable, blocked, views, new Date(), user);
+			
+			VideoDAO.create(video);
+			
+			Map<String, Object> data = new HashMap<>();
+			data.put("id", videoId);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonData = mapper.writeValueAsString(data);
+			System.out.println(jsonData);
 
-		response.setContentType("application/json");
-		response.getWriter().write(jsonData);
+			response.setContentType("application/json");
+			response.getWriter().write(jsonData);
+		}
 	}
 
 }

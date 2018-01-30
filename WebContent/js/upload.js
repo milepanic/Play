@@ -24,7 +24,8 @@ $(document).ready(function() {
 			visibility: $('input[name=visibility]:checked', '#upload-form').val(),
 			commentable: comm,
 			voteable: vote,
-			userId: eventAuth.id
+			userId: eventAuth.id,
+			type: "upload"
 		}
 		
 		$.post('VideoServlet', data, function(data) {

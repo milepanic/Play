@@ -309,6 +309,11 @@ nav {
 	margin-left: 15px;
 	font-size: 16px;
 }
+
+.voted {
+	color: #2b2b2b;
+}
+
 .votes a:hover {
 	text-decoration: none;
 }
@@ -345,7 +350,7 @@ nav {
 	color: #5c5d5e;
 }
 
-.follow-btn {
+.follow-btn, .edit-btn {
 	float: right;
 	margin: 10px 10px 0 0;
 }
@@ -364,6 +369,14 @@ nav {
 .video-single-comments h5 {
 	color: #565656;
 	margin: 10px 0 20px 10px;
+	float: left;
+	text-transform: uppercase;
+}
+
+.video-single-orderby {
+	float: right;
+	padding-top: 10px;
+	color: #3c3c3d;
 }
 
 .write-comment {
@@ -380,7 +393,7 @@ nav {
 .comment {
 	width: 100%;
 	min-height: 80px;
-	margin-bottom: 10px;
+	margin-bottom: 20px;
 }
 
 .comment-name {
@@ -390,6 +403,12 @@ nav {
 	color: #333;
 }
 
+.comment-date {
+	font-size: 12px;
+	color: #8c8c8c;
+	padding-left: 10px;
+}
+
 .comment-div {
 	margin: 7px 0 0 70px;
 }
@@ -397,6 +416,17 @@ nav {
 .comment-text {
 	font-size: 14px;
 	color: #444;
+}
+
+.comment-votes a {
+	float: right;
+	margin-right: 10px;
+	color: #b5b5b5;
+}
+
+.comment-votes a:hover {
+	text-decoration: none;
+	color: #9b9b9b;
 }
 
 .load-more-btn {

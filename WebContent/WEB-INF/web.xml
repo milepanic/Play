@@ -107,4 +107,24 @@
     <servlet-name>AdminServlet</servlet-name>
     <url-pattern>/AdminServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>LikeServlet</display-name>
+    <servlet-name>LikeServlet</servlet-name>
+    <servlet-class>play.LikeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LikeServlet</servlet-name>
+    <url-pattern>/LikeServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>VoteServlet</display-name>
+    <servlet-name>VoteServlet</servlet-name>
+    <servlet-class>play.VoteServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>VoteServlet</servlet-name>
+    <url-pattern>/VoteServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

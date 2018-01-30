@@ -66,7 +66,7 @@
                     <a href="index.html" class="margin-top"><i class="fa fa-home" aria-hidden="true"></i> Home</a>
                 </li>
                 <li>
-                    <a href="following.html"><i class="fa fa-plus" arria-hidden="true"></i> You Follow</a>
+                    <a href="following.html"><i class="fa fa-plus" aria-hidden="true"></i> You Follow</a>
                 </li>
                 <li>
                     <a href="upload.html"><i class="fa fa-upload" aria-hidden="true"></i> Upload</a>
@@ -103,12 +103,12 @@
                     			</div>
 
                     			<div class="video-sinlge-info-right">
-                    				<div class="votes">
-                    					<a href="#" class="upvotes">
-	                    					<i class="fa fa-thumbs-up"></i> 30K
+                    				<div class="votes hidden">
+                    					<a href="#" data-type="upvote" class="vote">
+	                    					<span id="upvote"><i class="fa fa-thumbs-up"></i> 0</span>
 	                    				</a>
-	                    				<a href="#" class="downvotes">
-	                    					<i class="fa fa-thumbs-down"></i> 888
+	                    				<a href="#" data-type="downvote" class="vote">
+	                    					<span id="downvote"><i class="fa fa-thumbs-down"></i> 0</span>
 	                    				</a>
                     				</div>
                     			</div>
@@ -132,18 +132,29 @@
 	                        	</p>
 	                        </div>
 
-	                        <div class="video-single-comments">
-	                        	<h5>COMMENTS • 133</h5>
+	                        <div class="video-single-comments hidden">
+	                        	<h5>Comments • 133</h5>
 	                        	
-	                        	<textarea name="text" class="write-comment" rows="1" placeholder="Write Comment"></textarea>
-	                        	<button type="submit" id="comment-btn" class="btn btn-default btn-add-comment">Submit</button>
-								
-								<div class="clearfix"></div>
-								
-								<div class="comments"></div>
-	                        	
-	                        	<button class="load-more-btn">Load more comments</button>
-
+	                        	<div class="comments-hide">
+		                        	<p class="video-single-orderby">
+		                        		Order by 
+		                        		<select>
+											<option value="latest">Latest</option>
+											<option value="oldest">Oldest</option>
+											<option value="likes">Likes</option>
+											<option value="dislikes">Dislikes</option>
+										</select> 
+		                        	</p>
+		                        	
+		                        	<textarea name="text" class="write-comment" rows="1" placeholder="Write Comment"></textarea>
+		                        	<button type="submit" id="comment-btn" class="btn btn-default btn-add-comment">Submit</button>
+									
+									<div class="clearfix"></div>
+									
+									<div class="comments"></div>
+		                        	
+		                        	<button class="load-more-btn">Load more comments</button>
+								</div>
 	                        </div>
 
                         </div>

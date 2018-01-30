@@ -2,6 +2,7 @@ function proceed(data) {
 	var id = window.location.search.slice(1).split('&')[0].split('=')[1];
 	
 	follows(data.auth, id);
+	voted(data.auth, id);
 }
 
 //Follow btn, follow user
@@ -10,7 +11,7 @@ function follows(auth, id) {
 	//follow/following btn or edit video
 	if(auth.id == id) {
 		$('.follow-edit').append('<a href="edit-video.html?id=' + id + '"' +
-				'class="btn btn-default follow-btn">Edit Video</a>');
+				'class="btn btn-default edit-btn">Edit Video</a>');
 	} else {
 		var data = {
 			page: "single",
@@ -62,6 +63,22 @@ function follows(auth, id) {
 	});
 }
 
+function voted(auth, id) {
+	
+	var data = {
+		userId: auth.id,
+		videoId: id
+	}
+	
+	$.get('VoteServlet', data, function(data) {
+		if(data.vote != null)
+			if(data.vote.like)
+				$("#upvote").addClass('voted');
+			else
+				$("#downvote").addClass('voted');
+	});
+}
+
 $(document).ready(function() {
 	
 	$("head").append('<script type="text/javascript" src="js/session.js"></script>');
@@ -85,6 +102,19 @@ $(document).ready(function() {
 			video_box.find('.profile-url').attr('href', 'profile.html?username=' + data.video.user.username);
 			video_box.find('.profile-name').text(data.video.user.username);
 			video_box.find('.video-single-description > p').text(data.video.description);
+			
+			if(data.video.voteable) {
+				$('.votes').removeClass('hidden');
+			} else
+				$('.votes').remove();
+			
+			$('.video-single-comments').removeClass('hidden');
+			if(data.video.commentable) {
+				
+			} else {
+				$('.video-single-comments').find('h5').text('Comments are disabled');
+				$('.comments-hide').remove();
+			}
 		});
 	}
 	
@@ -100,8 +130,17 @@ $(document).ready(function() {
 							'<img class="profile-pic-small" src="img/dude.jpg" alt="profile pic">' +
 							'<span class="comment-name">' + data.comments[i].user.username + '</span>' +
 						'</a>' +
+						'<span class="comment-date">' + data.comments[i].createdAt + '</span>' +
 						'<div class="comment-div">' +
 							'<p class="comment-text">' + data.comments[i].text + '</p>' +
+						'</div>' +
+						'<div class="comment-votes">' +
+							'<a href="#">' +
+	        					'<i class="fa fa-thumbs-up"></i> 105' +
+	        				'</a>' +
+	        				'<a href="#">' +
+	        					'<i class="fa fa-thumbs-down"></i> 13' +
+	        				'</a>' +
 						'</div>' +
 					'</div>'
 				);
@@ -109,6 +148,48 @@ $(document).ready(function() {
 			}
 		});
 	}
+	
+	//Like/dislike video
+	$('.vote').on('click', function(e) {
+		e.preventDefault();
+		
+		//ako korisnik nije ulogovan
+		if (eventAuth == null) {
+			if (confirm("You must be logged in to vote. \nDo you want to log in now?"))
+				window.location.replace('login.html');
+			else
+				return;
+		}
+		
+		// gleda da li je upvote ili downvote
+		var type = false;
+		
+		if($(this).data('type') == 'upvote')
+			type = true;
+		
+		// postavlja odgovarajuci izgled
+		var span = $(this).find('span');
+		
+		if(type) {
+			if($('#downvote').hasClass('voted'))
+				$('#downvote').removeClass('voted');
+		} else {
+			if($('#upvote').hasClass('voted'))
+				$('#upvote').removeClass('voted');
+		}
+		
+		span.toggleClass('voted');
+		
+		// salje serveru podatke
+		var data = {
+			userId: eventAuth.id,
+			videoId: id,
+			like: type
+		}
+		
+		$.post('VoteServlet', data);
+		
+	});
 	
 	//Commenting
 	$('#comment-btn').on('click', function(e) {
@@ -142,8 +223,17 @@ $(document).ready(function() {
 								'<img class="profile-pic-small" src="img/dude.jpg" alt="profile pic">' +
 								'<span class="comment-name">' + eventAuth.username + '</span>' +
 							'</a>' +
+							'<span class="comment-date">' + data.comment.createdAt + '</span>' +
 							'<div class="comment-div">' +
 								'<p class="comment-text">' + data.comment.text + '</p>' +
+							'</div>' +
+							'<div class="comment-votes">' +
+								'<a href="#">' +
+                					'<i class="fa fa-thumbs-up"></i> 105' +
+                				'</a>' +
+                				'<a href="#">' +
+                					'<i class="fa fa-thumbs-down"></i> 13' +
+                				'</a>' +
 							'</div>' +
 						'</div>'
 					);
