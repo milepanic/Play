@@ -41,7 +41,7 @@ public class CommentDAO {
 		return false;
 	}
 	
-	public static List<Comment> getAll(int id) {
+	public static List<Comment> getAll(int id, String param, String rank) {
 		
 		List<Comment> comments = new ArrayList<>();
 	
@@ -50,8 +50,10 @@ public class CommentDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		try {
-			String query = "SELECT * FROM comments WHERE video_id = ?";
-	
+			String query = "SELECT * FROM comments WHERE video_id = ? ORDER BY created_at";
+			if(rank.contains("DESC"))
+				query = query + " DESC";
+			
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
 			pstmt.setInt(index++, id);

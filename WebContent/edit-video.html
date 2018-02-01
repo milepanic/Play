@@ -65,7 +65,7 @@
                     <a href="index.html" class="margin-top"><i class="fa fa-home" aria-hidden="true"></i> Home</a>
                 </li>
                 <li>
-                    <a href="following.html"><i class="fa fa-plus" arria-hidden="true"></i> You Follow</a>
+                    <a href="following.html"><i class="fa fa-plus" aria-hidden="true"></i> You Follow</a>
                 </li>
                 <li>
                     <a href="upload.html"><i class="fa fa-upload" aria-hidden="true"></i> Upload</a>
@@ -89,7 +89,7 @@
                 <div class="row">
                     <div class="col-lg-8 upload-box">
                     
-                    	<h3 class="upload-h3"></h3>
+                    	<h3 class="upload-h3" id="edit-h3"></h3>
                     
                         <form id="edit-form">
 						  	<div class="form-group">
@@ -127,8 +127,16 @@
 						  	<br>
 						  	<button type="submit" id="submit" class="btn btn-default col-lg-12">Edit</button>
 						</form>
-						
                     </div>
+                    
+                    <div class="col-lg-8 upload-box">
+	                 	<h3 class="upload-h3" id="delete-h3"></h3>
+	                    <form id="delete-form">
+				  			<label>Delete this video. This can't be undone!</label>
+				  			<button type="submit" id="delete" class="btn btn-danger col-lg-12">Delete</button>
+						</form>
+	                </div>
+	                
                 </div>
             </div>
         </div>

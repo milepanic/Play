@@ -73,6 +73,38 @@ public class VoteDAO {
 		return null;
 	}
 	
+	public static int getVotes(int videoId, boolean like) {
+		Connection conn = ConnectionManager.getConnection();
+
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			String query = "SELECT count(*) FROM votes WHERE video_id = ? AND vote = ?";
+
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			pstmt.setInt(index++, videoId);
+			pstmt.setBoolean(index++, like);
+			System.out.println(pstmt);
+
+			rset = pstmt.executeQuery();
+			if (rset.next()) {				
+				index = 1;
+				int count = rset.getInt(index++);
+				
+				return count;
+			}
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+			try {rset.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+
+		return -1;
+	}
+	
 	public static boolean update(Vote vote) {
 		Connection conn = ConnectionManager.getConnection();
 

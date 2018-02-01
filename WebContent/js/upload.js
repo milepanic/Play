@@ -7,14 +7,14 @@ $(document).ready(function() {
 	$("#submit").click(function(e) {
 		e.preventDefault();
 		
-		var comm = 0;
+		var comm = false;
 		if($('#commentable').is(':checked')) {
-			comm = 1;
+			comm = true;
 		}
 		
-		var vote = 0;
+		var vote = false;
 		if($('#voteable').is(':checked')) {
-			vote = 1;
+			vote = true;
 		}
 		
 		var data = {

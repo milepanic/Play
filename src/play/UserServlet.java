@@ -24,11 +24,9 @@ public class UserServlet extends HttpServlet {
 		int id = Integer.parseInt(request.getParameter("id"));
 		
 		User user = UserDAO.get(id);
-		List<Video> videos = VideoDAO.getWhereUser(id);
 		
 		Map<String, Object> data = new HashMap<>();
 		data.put("user", user);
-		data.put("videos", videos);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonData = mapper.writeValueAsString(data);

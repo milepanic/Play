@@ -1,7 +1,6 @@
 package play;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,15 +17,28 @@ import play.dao.CommentDAO;
 import play.dao.UserDAO;
 import play.model.Comment;
 import play.model.User;
-import play.model.Video;
 
 public class CommentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		int videoId = Integer.parseInt(request.getParameter("id"));
-		List<Comment> comments = CommentDAO.getAll(videoId);
+		String order = request.getParameter("order");
+		
+		String param = "";
+		String rank = "ASC";
+		System.out.println(order.toString());
+		switch(order.toString()) {
+			case "Latest":
+				param = "created_at";
+				rank = "DESC";
+				break;
+			case "Oldest":
+				param ="created_at";
+				break;
+		}
+		
+		List<Comment> comments = CommentDAO.getAll(videoId, param, rank);
 		
 		Map<String, Object> data = new HashMap<>();
 		data.put("comments", comments);

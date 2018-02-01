@@ -4,9 +4,17 @@ $(document).ready(function() {
 	
 	var id = window.location.search.slice(1).split('&')[0].split('=')[1];
 	
-	$.get('VideoServlet', {id: id}, function(data) {
+	var data = {
+		id: id,
+		page: "single"
+	}
+	
+	$.get('VideoServlet', data, function(data) {
 		
-		$('.upload-h3').append('Edit Video "' + data.video.name + '"');
+		var name = data.video.name;
+		
+		$('#edit-h3').append('Edit Video "' + data.video.name + '"');
+		$('#delete-h3').append('Delete Video "' + data.video.name + '"');
 		
 		$("#description").val(data.video.description);
 		
@@ -55,4 +63,18 @@ $(document).ready(function() {
 			window.location.replace('single.html?id=' + id);
 		});
 	});
+	
+	$('#delete').on('click', function(e) {
+		e.preventDefault();
+		
+		var data = {
+			id: id,
+			type: "delete"
+		}
+		
+		$.pos('VideoServlet', data, function(data) {
+			window.location.replace('/');
+		});
+	});
+	
 });

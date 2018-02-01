@@ -9,12 +9,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import play.dao.VideoDAO;
-import play.model.User;
 import play.model.Video;
 
 public class IndexServlet extends HttpServlet {

@@ -18,24 +18,46 @@ public class VoteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int userId = Integer.parseInt(request.getParameter("userId"));
+		String action = request.getParameter("action");
 		int videoId = Integer.parseInt(request.getParameter("videoId"));
 		
-		Vote vote = new Vote();
-		vote.setUserId(userId);
-		vote.setVideoId(videoId);
-		
-		Vote voted = VoteDAO.get(vote);
-		
-		Map<String, Object> data = new HashMap<>();
-		data.put("vote", voted);
-		
-		ObjectMapper mapper = new ObjectMapper();
-		String jsonData = mapper.writeValueAsString(data);
-		System.out.println(jsonData);
+		if(action.contains("check-vote")) {
+			int userId = Integer.parseInt(request.getParameter("userId"));
+			
+			Vote vote = new Vote();
+			vote.setUserId(userId);
+			vote.setVideoId(videoId);
+			
+			Vote voted = VoteDAO.get(vote);
+			
+			Map<String, Object> data = new HashMap<>();
+			data.put("vote", voted);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonData = mapper.writeValueAsString(data);
+			System.out.println(jsonData);
 
-		response.setContentType("application/json");
-		response.getWriter().write(jsonData);
+			response.setContentType("application/json");
+			response.getWriter().write(jsonData);
+		} else {
+			int upvotes = VoteDAO.getVotes(videoId, true);
+			System.out.println("Upvotes: " + upvotes);
+			
+			int downvotes = VoteDAO.getVotes(videoId, false);
+			System.out.println("Downvotes: " + downvotes);
+			
+			Map<String, Object> data = new HashMap<>();
+			data.put("upvotes", upvotes);
+			data.put("downvotes", downvotes);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonData = mapper.writeValueAsString(data);
+			System.out.println(jsonData);
+
+			response.setContentType("application/json");
+			response.getWriter().write(jsonData);
+		}
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

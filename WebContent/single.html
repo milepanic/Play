@@ -105,10 +105,14 @@
                     			<div class="video-sinlge-info-right">
                     				<div class="votes hidden">
                     					<a href="#" data-type="upvote" class="vote">
-	                    					<span id="upvote"><i class="fa fa-thumbs-up"></i> 0</span>
+	                    					<span id="upvote">
+	                    						<i class="fa fa-thumbs-up"></i> <span class="number">0</span>
+	                    					</span>
 	                    				</a>
 	                    				<a href="#" data-type="downvote" class="vote">
-	                    					<span id="downvote"><i class="fa fa-thumbs-down"></i> 0</span>
+	                    					<span id="downvote">
+	                    						<i class="fa fa-thumbs-down"> </i><span class="number">0</span>
+	                    					</span>
 	                    				</a>
                     				</div>
                     			</div>
@@ -138,11 +142,11 @@
 	                        	<div class="comments-hide">
 		                        	<p class="video-single-orderby">
 		                        		Order by 
-		                        		<select>
-											<option value="latest">Latest</option>
-											<option value="oldest">Oldest</option>
-											<option value="likes">Likes</option>
-											<option value="dislikes">Dislikes</option>
+		                        		<select id="comments-order">
+											<option class="order-val" value="latest">Latest</option>
+											<option class="order-val" value="oldest">Oldest</option>
+											<option class="order-val" value="likes">Likes</option>
+											<option class="order-val" value="dislikes">Dislikes</option>
 										</select> 
 		                        	</p>
 		                        	

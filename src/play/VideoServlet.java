@@ -2,8 +2,8 @@ package play;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -24,12 +24,36 @@ public class VideoServlet extends HttpServlet {
        
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int id = Integer.parseInt(request.getParameter("id"));
-		
-		System.out.println("ID videa je: " + id);
-		Video video = VideoDAO.get(id);
+		String page = request.getParameter("page");
 		
 		Map<String, Object> data = new HashMap<>();
-		data.put("video", video);
+		
+		if (page.contentEquals("single")) {
+			Video video = VideoDAO.get(id);
+			int views = video.getViews();
+			views++;
+			video.setViews(views);
+			VideoDAO.update(video);
+			data.put("video", video);
+		} else if (page.contentEquals("user")) {
+			String order = request.getParameter("order");
+			String param = "created_at";
+			String rank = "ASC";
+			
+			switch(order.toString()) {
+			case "Latest":
+				rank = "DESC";
+				break;
+			case "Most popular":
+				param = "views";
+				rank = "DESC";
+			case "Least popular":
+				param = "views";
+			}
+			
+			List<Video> videos = VideoDAO.getWhereUserWithParams(id, param, rank);
+			data.put("videos", videos);
+		}
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonData = mapper.writeValueAsString(data);
@@ -59,7 +83,9 @@ public class VideoServlet extends HttpServlet {
 			
 			VideoDAO.update(video);
 			return;
-			// obrisati else
+		} else if(type.contentEquals("delete")) {
+			int id = Integer.parseInt(request.getParameter("id"));
+			// napraviti delete u DAO
 		} else {
 			String YoutubeUrl = request.getParameter("url");
 			String name = request.getParameter("name");

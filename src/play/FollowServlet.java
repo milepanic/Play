@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import play.dao.FollowDAO;
-import play.dao.VideoDAO;
+import play.model.User;
 import play.model.Video;
 
 public class FollowServlet extends HttpServlet {
@@ -21,11 +21,12 @@ public class FollowServlet extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String page = request.getParameter("page");
+		int userId = Integer.parseInt(request.getParameter("userId"));
 		
 		// First condition is to get all videos the user is following
-		// Second is to check on single.html if user is following video's author
+		// Second to get all users the user is following
+		// Third is to check on single.html if user is following video's author
 		if (page.contentEquals("following")) {
-			int userId = Integer.parseInt(request.getParameter("userId"));
 			List<Video> videos = FollowDAO.getVideos(userId);
 			
 			Map<String, Object> data = new HashMap<>();
@@ -37,9 +38,20 @@ public class FollowServlet extends HttpServlet {
 
 			response.setContentType("application/json");
 			response.getWriter().write(jsonData);
+		} else if (page.contentEquals("follows")) {
+			List<User> users = FollowDAO.getUsers(userId);
+			
+			Map<String, Object> data = new HashMap<>();
+			data.put("users", users);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonData = mapper.writeValueAsString(data);
+			System.out.println(jsonData);
+
+			response.setContentType("application/json");
+			response.getWriter().write(jsonData);
 		} else {
 			int followerId = Integer.parseInt(request.getParameter("follower_id"));
-			int userId = Integer.parseInt(request.getParameter("user_id"));
 			
 			boolean follow = FollowDAO.get(followerId, userId);
 			

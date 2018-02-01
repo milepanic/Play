@@ -54,7 +54,7 @@ public class VideoDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		try {
-			String query = "SELECT id, name, url, thumbnail, created_at, user_id "
+			String query = "SELECT id, name, url, thumbnail, views, created_at, user_id "
 					+ "FROM videos WHERE visibility = 'PUBLIC' AND blocked = false "
 					+ "ORDER BY created_at DESC";
 
@@ -69,6 +69,7 @@ public class VideoDAO {
 				String name = rset.getString(index++);
 				String url = rset.getString(index++);
 				String thumbnail = rset.getString(index++);
+				int views = rset.getInt(index++);
 				Date createdAt = rset.getDate(index++);
 				int user_id = rset.getInt(index++);
 				
@@ -80,8 +81,8 @@ public class VideoDAO {
 				video.SetName(name);
 				video.setUrl(url);
 				video.setThumbnail(thumbnail);
+				video.setViews(views);
 				video.setCreatedAt(createdAt);
-				System.out.println(video.getCreatedAt());
 				video.setUser(user);
 				
 				videos.add(video);
@@ -97,7 +98,6 @@ public class VideoDAO {
 		return videos;
 	}
 	
-	// proslijediti i korisnika
 	public static List<Video> getWhereUser(int id) {
 		List<Video> videos = new ArrayList<>();
 		Connection conn = ConnectionManager.getConnection();
@@ -107,6 +107,64 @@ public class VideoDAO {
 		try {
 			String query = "SELECT * "
 					+ "FROM videos WHERE user_id = ? ORDER BY created_at DESC";
+
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			pstmt.setInt(index++, id);
+			System.out.println(pstmt);
+
+			rset = pstmt.executeQuery();
+			while (rset.next()) {
+				index = 1;
+				int videoId = rset.getInt(index++);
+				String name = rset.getString(index++);
+				String url = rset.getString(index++);
+				String thumbnail = rset.getString(index++);
+				String description = rset.getString(index++);
+				Visibility visibility = Visibility.valueOf(rset.getString(index++));
+				boolean commentable = rset.getBoolean(index++);
+				boolean voteable = rset.getBoolean(index++);
+				boolean blocked = rset.getBoolean(index++);
+				int views = rset.getInt(index++);
+				Date createdAt = rset.getDate(index++);
+				int userId = rset.getInt(index++);
+				
+				User user = UserDAO.get(userId);
+
+				Video video = new Video(videoId, name, url, thumbnail,
+						description, visibility, commentable, 
+						voteable, blocked, views, createdAt, user);
+				
+				videos.add(video);
+			}
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+			try {rset.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+
+		return videos;
+	}
+	
+	public static List<Video> getWhereUserWithParams(int id, String param, String rank) {
+		List<Video> videos = new ArrayList<>();
+		Connection conn = ConnectionManager.getConnection();
+
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			String query = "SELECT * "
+					+ "FROM videos WHERE user_id = ?";
+			
+			if(param.contentEquals("created_at"))
+				query += " ORDER BY created_at";
+			else if(param.contentEquals("views"))
+				query += " ORDER BY views";
+			
+			if(rank.contentEquals("DESC"))
+				query += " DESC";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
@@ -229,7 +287,7 @@ public class VideoDAO {
 
 		PreparedStatement pstmt = null;
 		try {
-			String query = "UPDATE videos SET description = ?, visibility = ?, commentable = ?, voteable = ? WHERE id = ?";
+			String query = "UPDATE videos SET description = ?, visibility = ?, commentable = ?, voteable = ?, views = ? WHERE id = ?";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
@@ -238,6 +296,7 @@ public class VideoDAO {
 			pstmt.setString(index++, video.getVisibility().toString());
 			pstmt.setBoolean(index++, video.isCommentable());
 			pstmt.setBoolean(index++, video.isVoteable());
+			pstmt.setInt(index++, video.getViews());
 			pstmt.setInt(index++, video.getId());
 			System.out.println(pstmt);
 

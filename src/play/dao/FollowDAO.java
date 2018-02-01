@@ -108,6 +108,42 @@ public class FollowDAO {
 		return null;
 	}
 	
+	public static List<User> getUsers(int followerId) {
+		List<User> users = new ArrayList<>();
+		
+		Connection conn = ConnectionManager.getConnection();
+
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			String query = "SELECT user_id FROM follow WHERE follower_id = ?";
+
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			pstmt.setInt(index++, followerId);
+			System.out.println(pstmt);
+
+			rset = pstmt.executeQuery();
+			int i = 0;
+			while (rset.next()) {
+				index = 1;
+				int userId = rset.getInt(index++);
+				
+				User user = UserDAO.get(userId);
+				users.add(user);
+			}
+			return users;
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+			try {rset.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+
+		return null;
+	}
+	
 	public static boolean delete(int followerId, int userId) {
 		Connection conn = ConnectionManager.getConnection();
 

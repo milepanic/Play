@@ -24,31 +24,55 @@ $(document).ready(function() {
 			
 			$('.profile-videos').attr('href', "profile.html?id=" + data.user.id);
 			$('.profile-about').attr('href', "about.html?id=" + data.user.id);
+			$('.profile-follows').attr('href', "follows.html?id=" + data.user.id);
 			
 			profile.find('.profile-header-name').text(data.user.username);
 			profile.find('.profile-description').text(data.user.description);
 			
 			if (window.location.pathname == '/Play/profile.html') {
-				for(i in data.videos) {
+				
+				function getVideos() {
 					
-					$('.videos-box').append(
-						'<div class="video-box">' +
-							'<div class="thumbnail">' +
-								'<a href="single.html?id=' + data.videos[i].id + '">' +
-									'<img class="video-img" src="' + data.videos[i].thumbnail + '">' +
-								'</a>' +
-							'</div>' +
-							'<div class="info-box">' +
-								'<a href="single.html?id=' + data.videos[i].id + '" class="video-name">' +
-									data.videos[i].name +
-								'</a><br>' +
-								'<a href="profile.html?username=' + data.videos[i].user.username +'" class="channel-name">' + data.videos[i].user.username + '</a><br>' +
-								'<span class="views"><i class="fa fa-eye"></i> ' + data.videos[i].views + ' Views </span>&nbsp;' +
-								'<span class="date"><i class="fa fa-clock-o"></i> ' + data.videos[i].createdAt + '</span>' +
-							'</div>' +
-						'</div>'
-					);
+					$('.videos-box').empty();
+					
+					var order = $('#comments-order').find(":selected").text();
+					
+					var data2 = {
+						id: id,
+						page: "user",
+						order: order
+					}
+					
+					$.get('VideoServlet', data2, function(data) {
+						for(i in data.videos) {
+							
+							$('.videos-box').append(
+								'<div class="video-box">' +
+									'<div class="thumbnail">' +
+										'<a href="single.html?id=' + data.videos[i].id + '">' +
+											'<img class="video-img" src="' + data.videos[i].thumbnail + '">' +
+										'</a>' +
+									'</div>' +
+									'<div class="info-box">' +
+										'<a href="single.html?id=' + data.videos[i].id + '" class="video-name">' +
+											data.videos[i].name +
+										'</a><br>' +
+										'<a href="profile.html?username=' + data.videos[i].user.username +'" class="channel-name">' + data.videos[i].user.username + '</a><br>' +
+										'<span class="views"><i class="fa fa-eye"></i> ' + data.videos[i].views + ' Views </span>&nbsp;' +
+										'<span class="date"><i class="fa fa-clock-o"></i> ' + data.videos[i].createdAt + '</span>' +
+									'</div>' +
+								'</div>'
+							);
+						}
+					});
 				}
+				
+				getVideos();
+				
+				$('.order-val').on('click', function() {
+					getVideos();
+				});
+				
 			} else if (window.location.pathname == '/Play/about.html') {
 				
 				$('.upload-h3').text('About ' + data.user.username);
@@ -84,6 +108,34 @@ $(document).ready(function() {
 						window.location.replace('about.html?id=' + id);
 					});
 				})
+			} else if (window.location.pathname == '/Play/follows.html') {
+				
+				var data = {
+					page: "follows",
+					userId: id
+				}
+				
+				$.get('FollowServlet', data, function(data) {
+					
+					for(i in data.users) {
+						$('.follows').append(
+							'<div class="col-md-4">' +
+								'<div class="user-box">' +
+									'<div class="user-left">' +
+										'<img class="profile-pic-medium"' +
+										'src="https://www.poeticous.com/system/poets/photos/000/026/357/large/jm-flower-crown.jpg?1481219945">' +
+									'</div>' +
+									'<div class="user-right col-md-7">' +
+										'<p class="user-username">' + data.users[i].username + '</p>' +
+										'<p class="user-followers"><span class="user-number">13</span> Followers</p>' +
+										'<button class="btn btn-primary user-follow">+ Follow</button>' +
+									'</div>' +
+									'<div class="clearfix"></div>' +
+								'</div>' +
+							'</div>'
+						);
+					}
+				});
 			}
 		});
 	}
