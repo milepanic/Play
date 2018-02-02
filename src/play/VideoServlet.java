@@ -13,9 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import play.dao.FollowDAO;
 import play.dao.UserDAO;
 import play.dao.VideoDAO;
 import play.model.User;
+import play.model.User.Role;
 import play.model.Video;
 import play.model.Video.Visibility;
 
@@ -30,11 +32,16 @@ public class VideoServlet extends HttpServlet {
 		
 		if (page.contentEquals("single")) {
 			Video video = VideoDAO.get(id);
+			
 			int views = video.getViews();
 			views++;
 			video.setViews(views);
 			VideoDAO.update(video);
+			
+			int count = FollowDAO.count(video.getUser().getId());
+			
 			data.put("video", video);
+			data.put("count", count);
 		} else if (page.contentEquals("user")) {
 			String order = request.getParameter("order");
 			String param = "created_at";
@@ -66,6 +73,14 @@ public class VideoServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String type = request.getParameter("type");
 		
+		if(type.contentEquals("delete")) {
+			int id = Integer.parseInt(request.getParameter("id"));
+			Role role = Role.valueOf(request.getParameter("role"));
+			
+			VideoDAO.delete(id, role);
+			return;
+		}
+		
 		String description = request.getParameter("description");
 		Visibility visibility = Visibility.valueOf(request.getParameter("visibility"));
 		boolean commentable = Boolean.valueOf(request.getParameter("commentable"));
@@ -83,9 +98,6 @@ public class VideoServlet extends HttpServlet {
 			
 			VideoDAO.update(video);
 			return;
-		} else if(type.contentEquals("delete")) {
-			int id = Integer.parseInt(request.getParameter("id"));
-			// napraviti delete u DAO
 		} else {
 			String YoutubeUrl = request.getParameter("url");
 			String name = request.getParameter("name");

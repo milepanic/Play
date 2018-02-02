@@ -10,6 +10,7 @@ import java.util.List;
 
 import play.dao.ConnectionManager;
 import play.model.User;
+import play.model.User.Role;
 import play.model.Video;
 import play.model.Video.Visibility;
 
@@ -55,7 +56,7 @@ public class VideoDAO {
 		ResultSet rset = null;
 		try {
 			String query = "SELECT id, name, url, thumbnail, views, created_at, user_id "
-					+ "FROM videos WHERE visibility = 'PUBLIC' AND blocked = false "
+					+ "FROM videos WHERE visibility = 'PUBLIC' AND blocked = false AND deleted = false "
 					+ "ORDER BY created_at DESC";
 
 			pstmt = conn.prepareStatement(query);
@@ -106,7 +107,8 @@ public class VideoDAO {
 		ResultSet rset = null;
 		try {
 			String query = "SELECT * "
-					+ "FROM videos WHERE user_id = ? ORDER BY created_at DESC";
+					+ "FROM videos WHERE visibility = 'PUBLIC' AND blocked = false AND deleted = false AND "
+					+ "user_id = ? ORDER BY created_at DESC";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
@@ -156,7 +158,7 @@ public class VideoDAO {
 		ResultSet rset = null;
 		try {
 			String query = "SELECT * "
-					+ "FROM videos WHERE user_id = ?";
+					+ "FROM videos WHERE visibility = 'PUBLIC' AND blocked = false AND deleted = false AND user_id = ?";
 			
 			if(param.contentEquals("created_at"))
 				query += " ORDER BY created_at";
@@ -282,6 +284,68 @@ public class VideoDAO {
 		return 0;
 	}
 	
+	public static int countViews(int userId) {
+		Connection conn = ConnectionManager.getConnection();
+	
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			String query = "SELECT sum(views) FROM videos WHERE user_id = ?";
+			
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			pstmt.setInt(index++, userId);
+			System.out.println(pstmt);
+	
+			rset = pstmt.executeQuery();
+			if (rset.next()) {
+				index = 1;
+				int count = rset.getInt(index++);
+				
+				return count;
+			}
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+			try {rset.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+		
+		return -1;
+	}
+	
+	public static int countVideos(int userId) {
+		Connection conn = ConnectionManager.getConnection();
+	
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			String query = "SELECT count(*) FROM videos WHERE user_id = ?";
+			
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			pstmt.setInt(index++, userId);
+			System.out.println(pstmt);
+	
+			rset = pstmt.executeQuery();
+			if (rset.next()) {
+				index = 1;
+				int count = rset.getInt(index++);
+				
+				return count;
+			}
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+			try {rset.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+		
+		return -1;
+	}
+	
 	public static boolean update(Video video) {
 		Connection conn = ConnectionManager.getConnection();
 
@@ -308,6 +372,33 @@ public class VideoDAO {
 			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
 		}
 
+		return false;
+	}
+	
+	public static boolean delete(int id, Role role) {
+		Connection conn = ConnectionManager.getConnection();
+
+		PreparedStatement pstmt = null;
+		try {
+			String query = "UPDATE videos SET deleted = true WHERE id = ?";
+			
+			//if(role.equals(Role.ADMIN))
+				//query = "DELETE FROM videos WHERE id = ?";
+
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			
+			pstmt.setInt(index++, id);
+			System.out.println(pstmt);
+
+			return pstmt.executeUpdate() == 1;
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+		
 		return false;
 	}
 }

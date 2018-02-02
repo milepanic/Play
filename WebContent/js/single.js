@@ -72,12 +72,14 @@ function voted(auth, id) {
 	var data = {
 		action: "check-vote",
 		userId: auth.id,
-		videoId: id
+		voteableId: id,
+		voteableType: "video"
 	}
 	
 	$.get('VoteServlet', data, function(data) {
+		console.log(data);
 		if(data.vote != null)
-			if(data.vote.like)
+			if(data.vote.vote)
 				$("#upvote").addClass('voted');
 			else
 				$("#downvote").addClass('voted');
@@ -105,6 +107,8 @@ $(document).ready(function() {
 			userId = data.video.user.id;
 			
 			$(document).attr('title', data.video.name);
+			
+			$('.profile-followers').append(data.count + ' Followers');
 			
 			video_box.find('iframe').attr('src', data.video.url + '?autoplay=1');
 			video_box.find('.video-single-title').text(data.video.name);
@@ -142,6 +146,8 @@ $(document).ready(function() {
 		}
 		
 		$.get('CommentServlet', data, function(data) {
+			console.log(data);
+			$('#comment-number').append(data.count);
 			
 			for(i in data.comments) {
 				
@@ -155,12 +161,16 @@ $(document).ready(function() {
 						'<div class="comment-div">' +
 							'<p class="comment-text">' + data.comments[i].text + '</p>' +
 						'</div>' +
-						'<div class="comment-votes">' +
-							'<a href="#">' +
-	        					'<i class="fa fa-thumbs-up"></i> 105' +
-	        				'</a>' +
-	        				'<a href="#">' +
-	        					'<i class="fa fa-thumbs-down"></i> 13' +
+						'<div class="comment-votes" data-type="comment" data-id="' + data.comments[i].id + '">' +
+							'<a href="#" class="vote" data-vote="downvote">' +
+		    					'<span id="down">' +
+									'<i class="fa fa-thumbs-down"></i> <span class="comment-number">0</span>' +
+								'</span>' +
+		    				'</a>' +
+							'<a href="#" class="vote" data-vote="upvote">' +
+	        					'<span id="up">' +
+									'<i class="fa fa-thumbs-up"></i> <span class="comment-number">0</span>' +
+								'</span>' +
 	        				'</a>' +
 						'</div>' +
 					'</div>'
@@ -179,7 +189,8 @@ $(document).ready(function() {
 		
 		var data = {
 			action: "get-votes",
-			videoId: id
+			voteableType: "video",
+			voteableId: id
 		}
 		
 		$.get('VoteServlet', data, function(data) {
@@ -212,8 +223,9 @@ $(document).ready(function() {
 		}
 	}
 	
-	//Like/dislike video
-	$('.vote').on('click', function(e) {
+	// Like/dislike komentara
+	$('.comments').delegate('.vote', 'click', function(e) {
+		
 		e.preventDefault();
 		
 		//ako korisnik nije ulogovan
@@ -223,19 +235,95 @@ $(document).ready(function() {
 			else
 				return;
 		}
+		// data-id komentara
+		var id = $(this).parent().data('id');
 		
 		// gleda da li je upvote ili downvote
-		var type = false;
+		var vote = false;
 		
-		if($(this).data('type') == 'upvote')
-			type = true;
+		if($(this).data('vote') == 'upvote')
+			vote = true;
+		
+		// postavlja izgled
+		var span = $(this).find('span');
+		var number = parseInt(span.find('.comment-number').text());
+		// && $('#down').parent().parent().data('id') == id
+		if(vote) {
+			if($('#down').hasClass('voted')) {
+				$('#down').removeClass('voted');
+				var nmb = $('#down').find('.comment-number').text();
+				var otherNumber = parseInt(nmb);
+				otherNumber--;
+				$('#down').find('.comment-number').empty().append(otherNumber);
+			}
+			
+			if($('#up').hasClass('voted'))
+				number--;
+			else
+				number++;
+			
+			span.find('.comment-number').empty().append(number);
+		// downvote
+		} else {
+			if($('#up').hasClass('voted')) {
+				$('#up').removeClass('voted');
+				var nmb = $('#up').find('.comment-number').text();
+				var otherNumber = parseInt(nmb);
+				otherNumber--;
+				$('#up').find('.comment-number').empty().append(otherNumber);
+			}
+			
+			if($('#down').hasClass('voted'))
+				number--;
+			else
+				number++;
+			
+			span.find('.comment-number').empty().append(number);
+		}
+		
+		span.toggleClass('voted');
+		
+		// da li je komentar ili video
+		var voteableType = $(this).parent().data('type');
+		
+		// salje serveru podatke
+		var data = {
+			userId: eventAuth.id,
+			voteableId: id,
+			voteableType: voteableType,
+			vote: vote
+		}
+		
+		$.post('VoteServlet', data);
+	});
+	
+	// Like/dislike videa
+	$('.vote').on('click', function(e) {
+		e.preventDefault();
+		
+		//ako korisnik nije ulogovan
+		if (eventAuth == null) {
+			if (confirm("You must be logged in to leave a rating. \nDo you want to log in now?"))
+				window.location.replace('login.html');
+			else
+				return;
+		}
+		
+		// da li je komentar ili video
+		var voteableType = $(this).parent().data('type');
+		
+		// gleda da li je upvote ili downvote
+		var vote = false;
+		
+		if($(this).data('vote') == 'upvote')
+			vote = true;
 		
 		// postavlja odgovarajuci izgled
 		var span = $(this).find('span');
 		var number = parseInt(span.find('.number').text());
 		
 		// upvote
-		if(type) {
+		if(vote) {
 			if($('#downvote').hasClass('voted')) {
 				$('#downvote').removeClass('voted');
 				var nmb = $('#downvote').find('.number').text();
@@ -273,12 +361,12 @@ $(document).ready(function() {
 		// salje serveru podatke
 		var data = {
 			userId: eventAuth.id,
-			videoId: id,
-			like: type
+			voteableId: id,
+			voteableType: voteableType,
+			vote: vote
 		}
 		
 		$.post('VoteServlet', data);
-		
 	});
 	
 	//Commenting
@@ -307,6 +395,10 @@ $(document).ready(function() {
 			success: function(data) {
 				$('.write-comment').val('');
 				
+				var count = parseInt($('#comment-number').text());
+				count++;
+				$('#comment-number').empty().append(count);
+				
 				$('.comments').prepend(
 					'<div class="comment">' +
 						'<a href="profile.html?username=' + eventAuth.username + '">' +
@@ -317,13 +409,17 @@ $(document).ready(function() {
 						'<div class="comment-div">' +
 							'<p class="comment-text">' + data.comment.text + '</p>' +
 						'</div>' +
-						'<div class="comment-votes">' +
-							'<a href="#">' +
-            					'<i class="fa fa-thumbs-up"></i> 105' +
-            				'</a>' +
-            				'<a href="#">' +
-            					'<i class="fa fa-thumbs-down"></i> 13' +
-            				'</a>' +
+						'<div class="comment-votes" data-type="comment" data-id="' + data.comment.id + '">' +
+							'<a href="#" class="vote" data-vote="downvote">' +
+		    					'<span id="down">' +
+									'<i class="fa fa-thumbs-down"></i> <span class="comment-number">0</span>' +
+								'</span>' +
+		    				'</a>' +
+							'<a href="#" class="vote" data-vote="upvote">' +
+	        					'<span id="up">' +
+									'<i class="fa fa-thumbs-up"></i> <span class="comment-number">0</span>' +
+								'</span>' +
+	        				'</a>' +
 						'</div>' +
 					'</div>'
 				);

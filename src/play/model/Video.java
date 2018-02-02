@@ -18,8 +18,8 @@ public class Video {
 	private int views;
 	private Date createdAt;
 	private User user;
-	
-	
+	private boolean deleted;
+
 	public Video(int id, String name, String url, String thumbnail, String description, 
 			Visibility visibility, boolean commentable,	 boolean voteable, 
 			boolean blocked, int views, Date createdAt, User user) {
@@ -153,6 +153,14 @@ public class Video {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 	
 	

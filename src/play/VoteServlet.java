@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import play.dao.VideoDAO;
 import play.dao.VoteDAO;
+import play.model.Video;
 import play.model.Vote;
 
 public class VoteServlet extends HttpServlet {
@@ -19,14 +21,18 @@ public class VoteServlet extends HttpServlet {
        
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("action");
-		int videoId = Integer.parseInt(request.getParameter("videoId"));
+		int voteableId = Integer.parseInt(request.getParameter("voteableId"));
+		String voteableType = request.getParameter("voteableType");
 		
+		// prvi uslov je kada se ucita stranica da provjeri da li je korisnik glasao
+		// drugi je da ispise broj up/down vote-a
 		if(action.contains("check-vote")) {
 			int userId = Integer.parseInt(request.getParameter("userId"));
 			
 			Vote vote = new Vote();
 			vote.setUserId(userId);
-			vote.setVideoId(videoId);
+			vote.setVoteableId(voteableId);
+			vote.setVoteableType(voteableType);
 			
 			Vote voted = VoteDAO.get(vote);
 			
@@ -39,11 +45,11 @@ public class VoteServlet extends HttpServlet {
 
 			response.setContentType("application/json");
 			response.getWriter().write(jsonData);
-		} else {
-			int upvotes = VoteDAO.getVotes(videoId, true);
+		} else {			
+			int upvotes = VoteDAO.getVotes(voteableId, voteableType, true);
 			System.out.println("Upvotes: " + upvotes);
 			
-			int downvotes = VoteDAO.getVotes(videoId, false);
+			int downvotes = VoteDAO.getVotes(voteableId, voteableType, false);
 			System.out.println("Downvotes: " + downvotes);
 			
 			Map<String, Object> data = new HashMap<>();
@@ -62,22 +68,27 @@ public class VoteServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int userId = Integer.parseInt(request.getParameter("userId"));
-		int videoId = Integer.parseInt(request.getParameter("videoId"));
-		boolean like = Boolean.parseBoolean(request.getParameter("like"));
+		int voteableId = Integer.parseInt(request.getParameter("voteableId"));
+		String voteableType = request.getParameter("voteableType");
+		boolean isVote = Boolean.parseBoolean(request.getParameter("vote"));
 		
-		// ako je videu zabranjeno lajkovanje return
+		if(voteableType.contentEquals("video")) {
+			Video video = VideoDAO.get(voteableId);
+			if(!video.isVoteable()) return;
+		}
 		
 		Vote vote = new Vote();
 		vote.setUserId(userId);
-		vote.setVideoId(videoId);
-		vote.setLike(like);
+		vote.setVoteableId(voteableId);
+		vote.setVoteableType(voteableType);
+		vote.setVote(isVote);
 		
 		Vote compare = VoteDAO.get(vote);
 		if(compare == null)
 			VoteDAO.create(vote);
-		else if(compare.isLike() != like)
+		else if(compare.isVote() != isVote)
 			VoteDAO.update(vote);
-		else if(compare.isLike() == like)
+		else if(compare.isVote() == isVote)
 			VoteDAO.delete(vote);
 		
 		//success - fail

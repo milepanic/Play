@@ -103,13 +103,13 @@
                     			</div>
 
                     			<div class="video-sinlge-info-right">
-                    				<div class="votes hidden">
-                    					<a href="#" data-type="upvote" class="vote">
+                    				<div class="votes hidden" data-type="video">
+                    					<a href="#" data-vote="upvote" class="vote">
 	                    					<span id="upvote">
 	                    						<i class="fa fa-thumbs-up"></i> <span class="number">0</span>
 	                    					</span>
 	                    				</a>
-	                    				<a href="#" data-type="downvote" class="vote">
+	                    				<a href="#" data-vote="downvote" class="vote">
 	                    					<span id="downvote">
 	                    						<i class="fa fa-thumbs-down"> </i><span class="number">0</span>
 	                    					</span>
@@ -123,7 +123,7 @@
                     			<div class="float-left">
                     				<a class="profile-url"><img class="profile-pic-small" src="img/dude.jpg" alt="profile picture"></a>
 	                    			<a class="profile-url"><span class="profile-name"></span></a><br>
-	                    			<span class="profile-followers">1,376 Followers</span>
+	                    			<span class="profile-followers"></span>
                     			</div>
                     			<div class="follow-edit"></div>
                     			
@@ -137,7 +137,7 @@
 	                        </div>
 
 	                        <div class="video-single-comments hidden">
-	                        	<h5>Comments • 133</h5>
+	                        	<h5>Comments • <span id="comment-number"></span></h5>
 	                        	
 	                        	<div class="comments-hide">
 		                        	<p class="video-single-orderby">

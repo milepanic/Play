@@ -39,9 +39,11 @@ public class CommentServlet extends HttpServlet {
 		}
 		
 		List<Comment> comments = CommentDAO.getAll(videoId, param, rank);
+		int count = CommentDAO.count(videoId);
 		
 		Map<String, Object> data = new HashMap<>();
 		data.put("comments", comments);
+		data.put("count", count);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonData = mapper.writeValueAsString(data);

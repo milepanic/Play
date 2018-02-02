@@ -15,13 +15,14 @@ public class VoteDAO {
 
 		PreparedStatement pstmt = null;
 		try {
-			String query = "INSERT INTO votes (user_id, video_id, vote) VALUES (?, ?, ?)";
+			String query = "INSERT INTO votes (user_id, voteable_id, voteable_type, vote) VALUES (?, ?, ?, ?)";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
 			pstmt.setInt(index++, vote.getUserId());
-			pstmt.setInt(index++, vote.getVideoId());
-			pstmt.setBoolean(index++, vote.isLike());
+			pstmt.setInt(index++, vote.getVoteableId());
+			pstmt.setString(index++, vote.getVoteableType());
+			pstmt.setBoolean(index++, vote.isVote());
 			
 			System.out.println(pstmt);
 
@@ -43,12 +44,13 @@ public class VoteDAO {
 		ResultSet rset = null;
 		try {
 			String query = "SELECT * "
-					+ "FROM votes WHERE user_id = ? AND video_id = ?";
+					+ "FROM votes WHERE user_id = ? AND voteable_id = ? AND voteable_type = ?";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
 			pstmt.setInt(index++, vote.getUserId());
-			pstmt.setInt(index++, vote.getVideoId());
+			pstmt.setInt(index++, vote.getVoteableId());
+			pstmt.setString(index++, vote.getVoteableType());
 			System.out.println(pstmt);
 
 			rset = pstmt.executeQuery();
@@ -56,11 +58,12 @@ public class VoteDAO {
 				index = 1;
 				int id = rset.getInt(index++);
 				int userId = rset.getInt(index++);
-				int videoId = rset.getInt(index++);
-				boolean like = rset.getBoolean(index++);
+				int voteableId = rset.getInt(index++);
+				String voteableType = rset.getString(index++);
+				boolean isVote = rset.getBoolean(index++);
 				Date createdAt = rset.getDate(index++);
 				
-				return new Vote(userId, videoId, like, createdAt);
+				return new Vote(userId, voteableId, voteableType, isVote, createdAt);
 			}
 		} catch (SQLException ex) {
 			System.out.println("Greska u SQL upitu!");
@@ -73,17 +76,18 @@ public class VoteDAO {
 		return null;
 	}
 	
-	public static int getVotes(int videoId, boolean like) {
+	public static int getVotes(int videoId, String type, boolean like) {
 		Connection conn = ConnectionManager.getConnection();
 
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		try {
-			String query = "SELECT count(*) FROM votes WHERE video_id = ? AND vote = ?";
+			String query = "SELECT count(*) FROM votes WHERE voteable_id = ? AND voteable_type = ? AND vote = ?";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
 			pstmt.setInt(index++, videoId);
+			pstmt.setString(index++, type);
 			pstmt.setBoolean(index++, like);
 			System.out.println(pstmt);
 
@@ -110,14 +114,15 @@ public class VoteDAO {
 
 		PreparedStatement pstmt = null;
 		try {
-			String query = "UPDATE votes SET vote = ? WHERE user_id = ? AND video_id = ?";
+			String query = "UPDATE votes SET vote = ? WHERE user_id = ? AND voteable_id = ? AND voteable_type = ?";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
 			
-			pstmt.setBoolean(index++, vote.isLike());
+			pstmt.setBoolean(index++, vote.isVote());
 			pstmt.setInt(index++, vote.getUserId());
-			pstmt.setInt(index++, vote.getVideoId());
+			pstmt.setInt(index++, vote.getVoteableId());
+			pstmt.setString(index++, vote.getVoteableType());
 			System.out.println(pstmt);
 
 			return pstmt.executeUpdate() == 1;
@@ -136,12 +141,13 @@ public class VoteDAO {
 
 		PreparedStatement pstmt = null;
 		try {
-			String query = "DELETE FROM votes WHERE video_id = ? AND user_id = ?";
+			String query = "DELETE FROM votes WHERE user_id = ? AND voteable_id = ? AND voteable_type = ?";
 			pstmt = conn.prepareStatement(query);
 			
 			int index = 1;
-			pstmt.setInt(index++, vote.getVideoId());
 			pstmt.setInt(index++, vote.getUserId());
+			pstmt.setInt(index++, vote.getVoteableId());
+			pstmt.setString(index++, vote.getVoteableType());
 			System.out.println(pstmt);
 			
 			return pstmt.executeUpdate() == 1;

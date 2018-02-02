@@ -84,6 +84,37 @@ public class CommentDAO {
 		return comments;
 	}
 	
+	public static int count(int videoId) {
+		Connection conn = ConnectionManager.getConnection();
+	
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			String query = "SELECT count(*) FROM comments WHERE video_id = ?";
+			
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			pstmt.setInt(index++, videoId);
+			System.out.println(pstmt);
+	
+			rset = pstmt.executeQuery();
+			if (rset.next()) {
+				index = 1;
+				int count = rset.getInt(index++);
+				
+				return count;
+			}
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+			try {rset.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+		
+		return -1;
+	}
+	
 	public static int last() {
 		Connection conn = ConnectionManager.getConnection();
 	

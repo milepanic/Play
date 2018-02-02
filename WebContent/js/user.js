@@ -19,7 +19,7 @@ $(document).ready(function() {
 		var profile = $('.profile-container');
 		
 		$.get('UserServlet', {'id': id}, function(data) {
-			
+			console.log(data);
 			$(document).attr("title", data.user.username + " - Play");
 			
 			$('.profile-videos').attr('href', "profile.html?id=" + data.user.id);
@@ -28,6 +28,12 @@ $(document).ready(function() {
 			
 			profile.find('.profile-header-name').text(data.user.username);
 			profile.find('.profile-description').text(data.user.description);
+
+			$('.profile-info').append(
+				'<p>' + data.count[0] + '<br> <span>Views</span></p>' +
+				'<p>' + data.count[1] + '<br> <span>Followers</span></p>' +
+				'<p>' + data.count[2] + '<br> <span>Videos</span></p>'
+			);
 			
 			if (window.location.pathname == '/Play/profile.html') {
 				

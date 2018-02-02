@@ -90,6 +90,12 @@ nav {
     background:transparent;
 }
 
+#imaginary_container > a i {
+	color: #dedfe0;
+	margin-left: 20px;
+	font-size: 18px;
+}
+
 .not-logged-in li a {
 	color: #fff !important;
 	font-family: 'Monaco';

@@ -69,11 +69,12 @@ $(document).ready(function() {
 		
 		var data = {
 			id: id,
+			role: eventAuth.role,
 			type: "delete"
 		}
 		
-		$.pos('VideoServlet', data, function(data) {
-			window.location.replace('/');
+		$.post('VideoServlet', data, function(data) {
+			window.location.replace('/Play');
 		});
 	});
 	

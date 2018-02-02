@@ -1,6 +1,7 @@
 package play;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import play.dao.FollowDAO;
 import play.dao.UserDAO;
 import play.dao.VideoDAO;
 import play.model.User;
-import play.model.Video;
 
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -25,8 +26,18 @@ public class UserServlet extends HttpServlet {
 		
 		User user = UserDAO.get(id);
 		
+		int followersCount = FollowDAO.count(user.getId());
+		int viewsCount = VideoDAO.countViews(id);
+		int videosCount = VideoDAO.countVideos(id);
+		
+		List count = new ArrayList();
+		count.add(viewsCount);
+		count.add(followersCount);
+		count.add(videosCount);
+		
 		Map<String, Object> data = new HashMap<>();
 		data.put("user", user);
+		data.put("count", count);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonData = mapper.writeValueAsString(data);

@@ -35,6 +35,7 @@ CREATE TABLE videos (
 	views INT NOT NULL DEFAULT 0,
 	created_at TIMESTAMP,
 	user_id INT NOT NULL,
+	deleted BOOLEAN DEFAULT FALSE,
 	PRIMARY KEY (id),
 	FOREIGN KEY (user_id) REFERENCES users(id)
 );
@@ -69,10 +70,10 @@ CREATE TABLE follow (
 CREATE TABLE votes (
 	id INT AUTO_INCREMENT,
 	user_id INT,
-	video_id INT,
+	voteable_id INT,
+	voteable_type VARCHAR(30) NOT NULL,
 	vote BOOLEAN NOT NULL,
 	created_at TIMESTAMP,
 	PRIMARY KEY (id),
-	FOREIGN KEY (user_id) REFERENCES users(id),
-	FOREIGN KEY (video_id) REFERENCES videos(id)
+	FOREIGN KEY (user_id) REFERENCES users(id)
 );

@@ -20,7 +20,7 @@ function setData(data) {
 					'</a>' +
 					'<ul class="dropdown-menu">' +
 						'<li><a class="profile-link">Profile</a></li>' +
-						'<li><a href="#">Edit profile</a></li>' +
+						'<li><a class="profile-link-edit" href="#">Edit profile</a></li>' +
 						'<li><a href="upload.html">Upload video</a></li>' +
 						'<li role="separator" class="divider"></li>' +
 						'<li><a href="#" id="logout">Logout</a></li>' +
@@ -36,7 +36,8 @@ function setData(data) {
 			) : '';
 		
 		$("#dropdown-name").html(data.auth.username + ' <span class="caret"></span>');
-		$(".profile-link").attr("href", "profile.html?username=" + data.auth.username);
+		$(".profile-link").attr("href", "profile.html?id=" + data.auth.id);
+		$(".profile-link-edit").attr("href", "edit-profile.html?id=" + data.auth.id);
 	} else {
 		$(".auth-info").append(
 			'<ul class="nav navbar-nav navbar-right not-logged-in">' +
