@@ -29,10 +29,12 @@ function setData(data) {
 			'</ul>'
 		);
 		
+		$("#upload-list").append('<a href="upload.html"><i class="fa fa-upload" aria-hidden="true"></i> Upload</a>');
+		
 		data.auth.role == 'ADMIN' ?
 			$('.auth-info').find('.dropdown-menu').append(
 				'<li role="separator" class="divider"></li>' +
-				'<li><a href="admin.html">Admin panel</a></li>'
+				'<li><a href="admin/users.html">Admin panel</a></li>'
 			) : '';
 		
 		$("#dropdown-name").html(data.auth.username + ' <span class="caret"></span>');

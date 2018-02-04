@@ -13,10 +13,7 @@ public class LogoutServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.getSession().invalidate();
 		
-		//String referer = request.getHeader("Referer");
-		//System.out.println(referer);
-		
-		response.sendRedirect("./index.html");
+		response.sendRedirect("/Play");
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

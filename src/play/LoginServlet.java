@@ -23,6 +23,11 @@ public class LoginServlet extends HttpServlet {
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		User auth = (User) session.getAttribute("auth");
+		
+		if (auth != null) return;
+		
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		
@@ -34,8 +39,8 @@ public class LoginServlet extends HttpServlet {
 			if (user == null) throw new Exception("There is no user with that record");
 			if (!user.getPassword().equals(password)) throw new Exception("Username or password is not correct");
 			
-			HttpSession session = request.getSession();
-			session.setAttribute("loggedInUser", user);
+			//HttpSession session = request.getSession();
+			session.setAttribute("auth", user);
 		} catch (Exception ex) {
 			message = ex.getMessage();
 			status = "failure";

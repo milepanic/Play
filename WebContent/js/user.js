@@ -19,7 +19,6 @@ $(document).ready(function() {
 		var profile = $('.profile-container');
 		
 		$.get('UserServlet', {'id': id}, function(data) {
-			console.log(data);
 			$(document).attr("title", data.user.username + " - Play");
 			
 			$('.profile-videos').attr('href', "profile.html?id=" + data.user.id);
@@ -89,8 +88,7 @@ $(document).ready(function() {
 				$('.about-date').text(data.user.registeredAt);
 				$('.about-type').text(data.user.role);
 				
-			} else if (window.location.pathname == '/Play/edit-profile.html') {
-				
+			} else if (window.location.pathname == '/Play/edit-profile.html') {				
 				$('#username').val(data.user.username);
 				$('#firstname').val(data.user.firstName);
 				$('#lastname').val(data.user.lastName);
@@ -122,24 +120,28 @@ $(document).ready(function() {
 				}
 				
 				$.get('FollowServlet', data, function(data) {
-					
+					console.log(data);
 					for(i in data.users) {
 						$('.follows').append(
 							'<div class="col-md-4">' +
 								'<div class="user-box">' +
 									'<div class="user-left">' +
-										'<img class="profile-pic-medium"' +
-										'src="https://www.poeticous.com/system/poets/photos/000/026/357/large/jm-flower-crown.jpg?1481219945">' +
+										'<a href="profile.html?id=' + data.users[i].id + '"><img class="profile-pic-medium"' +
+										'src="https://www.poeticous.com/system/poets/photos/000/026/357/large/jm-flower-crown.jpg?1481219945"></a>' +
 									'</div>' +
 									'<div class="user-right col-md-7">' +
-										'<p class="user-username">' + data.users[i].username + '</p>' +
-										'<p class="user-followers"><span class="user-number">13</span> Followers</p>' +
+										'<a class="user-username" href="profile.html?id=' + data.users[i].id + '">' + data.users[i].username + '</a>' +
+										'<p class="user-followers"><span data-id="' + [i] + '" class="user-number"></span> Followers</p>' +
 										'<button class="btn btn-primary user-follow">+ Follow</button>' +
 									'</div>' +
 									'<div class="clearfix"></div>' +
 								'</div>' +
 							'</div>'
 						);
+					}
+					
+					for(j in data.count) {
+						$('.user-followers').find('[data-id="' + j + '"]').append(data.count[j]);
 					}
 				});
 			}

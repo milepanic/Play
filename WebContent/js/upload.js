@@ -1,4 +1,10 @@
-function proceed() {}
+function proceed(data) {
+	
+	if(data.status === "unauthenticated") {
+		window.location.replace('/Play');
+		return;
+	}
+}
 
 $(document).ready(function() {
 	

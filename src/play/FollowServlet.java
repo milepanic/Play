@@ -1,6 +1,7 @@
 package play;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -40,9 +42,15 @@ public class FollowServlet extends HttpServlet {
 			response.getWriter().write(jsonData);
 		} else if (page.contentEquals("follows")) {
 			List<User> users = FollowDAO.getUsers(userId);
+			List count = new ArrayList();
+			
+			for(User user : users) {
+				count.add(FollowDAO.count(user.getId()));
+			}
 			
 			Map<String, Object> data = new HashMap<>();
 			data.put("users", users);
+			data.put("count", count);
 			
 			ObjectMapper mapper = new ObjectMapper();
 			String jsonData = mapper.writeValueAsString(data);
@@ -68,17 +76,36 @@ public class FollowServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int followerId = Integer.parseInt(request.getParameter("follower_id"));
-		int userId = Integer.parseInt(request.getParameter("user_id"));
+		HttpSession session = request.getSession();
+		User auth = (User) session.getAttribute("auth");
 		
-		if (followerId == userId)
-			return;
+		Map<String, Object> data = new HashMap<>();
+		String status = "success";
 		
-		if (FollowDAO.get(followerId, userId))
-			FollowDAO.delete(followerId, userId);
-		else
-			FollowDAO.create(followerId, userId);
+		if(auth == null) {
+			status = "failure";
 			
+			data.put("status", status);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonData = mapper.writeValueAsString(data);
+			System.out.println(jsonData);
+
+			response.setContentType("application/json");
+			response.getWriter().write(jsonData);
+		} else {
+			int followerId = Integer.parseInt(request.getParameter("follower_id"));
+			int userId = Integer.parseInt(request.getParameter("user_id"));
+			
+			if (followerId == userId) return;
+			if (followerId != auth.getId()) return;
+			
+			if (FollowDAO.get(followerId, userId))
+				FollowDAO.delete(followerId, userId);
+			else
+				FollowDAO.create(followerId, userId);
+		}
+		
 	}
 
 }

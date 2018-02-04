@@ -2,6 +2,11 @@ $(document).ready(function () {
 	
 	$.get('../AdminServlet', function (data) {
 		
+		if(data.status === "unauthorized") {
+			window.location.replace('/Play');
+			return;
+		}
+		
 		var dataTable = $("#dataTable").DataTable();
 		
 		/*for(i in data.users) {

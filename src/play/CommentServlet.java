@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -17,6 +18,7 @@ import play.dao.CommentDAO;
 import play.dao.UserDAO;
 import play.model.Comment;
 import play.model.User;
+import play.model.User.Role;
 
 public class CommentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -54,6 +56,25 @@ public class CommentServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		User auth = (User) session.getAttribute("auth");
+		
+		Map<String, Object> data = new HashMap<>();
+		String status = "success";
+		
+		if(auth == null) {
+			status = "failure";
+			
+			data.put("status", status);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonData = mapper.writeValueAsString(data);
+			System.out.println(jsonData);
+
+			response.setContentType("application/json");
+			response.getWriter().write(jsonData);
+		}
+		
 		String text = request.getParameter("text");
 		int userId = Integer.parseInt(request.getParameter("user_id"));
 		int videoId = Integer.parseInt(request.getParameter("video_id"));
@@ -67,8 +88,8 @@ public class CommentServlet extends HttpServlet {
 		
 		CommentDAO.add(comment);
 		
-		Map<String, Object> data = new HashMap<>();
 		data.put("comment", comment);
+		data.put("status", status);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonData = mapper.writeValueAsString(data);

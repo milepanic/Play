@@ -124,7 +124,6 @@ public class FollowDAO {
 			System.out.println(pstmt);
 
 			rset = pstmt.executeQuery();
-			int i = 0;
 			while (rset.next()) {
 				index = 1;
 				int userId = rset.getInt(index++);

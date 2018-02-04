@@ -19,15 +19,15 @@ public class SessionServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		User loggedInUser = (User) session.getAttribute("loggedInUser");
+		User auth = (User) session.getAttribute("auth");
 		
 		Map<String, Object> data = new HashMap<>();
 		
-		if (loggedInUser == null) 
+		if (auth == null) 
 			data.put("status", "unauthenticated");
 		else {
 			data.put("status", "logged in");
-			data.put("auth", loggedInUser);
+			data.put("auth", auth);
 		}
 		
 		ObjectMapper mapper = new ObjectMapper();

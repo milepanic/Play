@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -48,13 +49,34 @@ public class UserServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		User auth = (User) session.getAttribute("auth");
+		
+		Map<String, Object> data = new HashMap<>();
+		String status = "success";
+		
 		String username = request.getParameter("username");
+		User user = UserDAO.get(username);
+		
+		if(auth == null || auth.getId() != user.getId()) {
+			status = "failure";
+			
+			data.put("status", status);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonData = mapper.writeValueAsString(data);
+			System.out.println(jsonData);
+
+			response.setContentType("application/json");
+			response.getWriter().write(jsonData);
+			return;
+		}
+		
+		
 		String firstName = request.getParameter("firstname");
 		String lastName = request.getParameter("lastname");
 		String email = request.getParameter("email");
 		String description = request.getParameter("description");
-		
-		User user = UserDAO.get(username);
 		
 		user.setFirstName(firstName);
 		user.setLastName(lastName);

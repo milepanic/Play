@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -31,6 +32,9 @@ public class VideoServlet extends HttpServlet {
 		Map<String, Object> data = new HashMap<>();
 		
 		if (page.contentEquals("single")) {
+			HttpSession session = request.getSession();
+			User auth = (User) session.getAttribute("auth");
+			
 			Video video = VideoDAO.get(id);
 			
 			int views = video.getViews();
@@ -42,6 +46,7 @@ public class VideoServlet extends HttpServlet {
 			
 			data.put("video", video);
 			data.put("count", count);
+			data.put("auth", auth);
 		} else if (page.contentEquals("user")) {
 			String order = request.getParameter("order");
 			String param = "created_at";
@@ -60,6 +65,9 @@ public class VideoServlet extends HttpServlet {
 			
 			List<Video> videos = VideoDAO.getWhereUserWithParams(id, param, rank);
 			data.put("videos", videos);
+		} else if (page.contentEquals("sidebar")) {
+			List <Video> videos = VideoDAO.random(4);
+			data.put("videos", videos);
 		}
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -71,6 +79,25 @@ public class VideoServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		User auth = (User) session.getAttribute("auth");
+		
+		Map<String, Object> data = new HashMap<>();
+		String status = "success";
+		
+		if(auth == null) {
+			status = "failure";
+			
+			data.put("status", status);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonData = mapper.writeValueAsString(data);
+			System.out.println(jsonData);
+
+			response.setContentType("application/json");
+			response.getWriter().write(jsonData);
+			return;
+		}
 		String type = request.getParameter("type");
 		
 		if(type.contentEquals("delete")) {
@@ -120,7 +147,7 @@ public class VideoServlet extends HttpServlet {
 			
 			VideoDAO.create(video);
 			
-			Map<String, Object> data = new HashMap<>();
+			//Map<String, Object> data = new HashMap<>();
 			data.put("id", videoId);
 			
 			ObjectMapper mapper = new ObjectMapper();

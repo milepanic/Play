@@ -581,6 +581,12 @@ nav {
 	float: left;
 	min-height: 60px;
 	width: 100%;
+	color: #282828;
+}
+
+.user-username:hover {
+	text-decoration: none;
+	color: #282828;
 }
 
 .user-followers {

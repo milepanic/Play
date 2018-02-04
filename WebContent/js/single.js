@@ -32,39 +32,7 @@ function follows(auth, videoId) {
 		
 	}
 	
-	// Follow - Unfollow
-	$('.follow-edit').delegate('.follow-btn', 'click', function (e) {
-		e.preventDefault();
-		
-		if (auth == null) {
-			if (confirm("You must be logged in to follow a user. \nDo you want to log in now?"))
-				window.location.replace('login.html');
-			else
-				return;
-		}
-		
-		if (auth.id == 2)
-			return;
-		
-		if ($('.follow-btn').hasClass('btn-primary')) {
-			$('.follow-btn').removeClass('btn-primary');
-			$('.follow-btn').addClass('btn-default');
-			$('.follow-btn').text('Following');
-		} else {
-			$('.follow-btn').removeClass('btn-default');
-			$('.follow-btn').addClass('btn-primary');
-			$('.follow-btn').text('+ Follow');
-		}
-		
-		var userId = $('.video-single-profile').data('id');
-		
-		var data = {
-			follower_id: auth.id,
-			user_id: userId
-		}
-		
-		$.post('FollowServlet', data);
-	});
+	
 }
 
 function voted(auth, id) {
@@ -77,7 +45,7 @@ function voted(auth, id) {
 	}
 	
 	$.get('VoteServlet', data, function(data) {
-		console.log(data);
+		//console.log(data);
 		if(data.vote != null)
 			if(data.vote.vote)
 				$("#upvote").addClass('voted');
@@ -103,7 +71,6 @@ $(document).ready(function() {
 		}
 		
 		$.get('VideoServlet', data, function(data) {
-			console.log(data);
 			userId = data.video.user.id;
 			
 			$(document).attr('title', data.video.name);
@@ -146,7 +113,7 @@ $(document).ready(function() {
 		}
 		
 		$.get('CommentServlet', data, function(data) {
-			console.log(data);
+			//console.log(data);
 			$('#comment-number').append(data.count);
 			
 			for(i in data.comments) {
@@ -198,17 +165,19 @@ $(document).ready(function() {
 			$("#downvote").find('.number').empty().append(data.downvotes);
 		});
 	}
-	
+	/*
 	function follows() {
 		
+		var userId = $('.video-single-profile').data('id');
+		alert(userId);
 		//follow/following btn or edit video
-		if(authId == userId) {
+		if(1 == userId) {
 			$('.follow-edit').append('<a href="edit-video.html?id=' + id + '"' +
 					'class="btn btn-default edit-btn">Edit Video</a>');
 		} else {
 			var data = {
 				page: "single",
-				follower_id: authId,
+				follower_id: 1,
 				user_id: userId
 			}
 			
@@ -223,6 +192,40 @@ $(document).ready(function() {
 		}
 	}
 	
+	// Follow - Unfollow
+	$('.follow-edit').delegate('.follow-btn', 'click', function (e) {
+		e.preventDefault();
+		
+		if (eventAuth == null) {
+			if (confirm("You must be logged in to follow a user. \nDo you want to log in now?"))
+				window.location.replace('login.html');
+			else
+				return;
+		}
+		
+		var userId = $('.video-single-profile').data('id');
+		
+		if (eventAuth.id == userId)
+			return;
+		
+		if ($('.follow-btn').hasClass('btn-primary')) {
+			$('.follow-btn').removeClass('btn-primary');
+			$('.follow-btn').addClass('btn-default');
+			$('.follow-btn').text('Following');
+		} else {
+			$('.follow-btn').removeClass('btn-default');
+			$('.follow-btn').addClass('btn-primary');
+			$('.follow-btn').text('+ Follow');
+		}
+		
+		var data = {
+			follower_id: eventAuth.id,
+			user_id: userId
+		}
+		
+		$.post('FollowServlet', data);
+	});
+	*/
 	// Like/dislike komentara
 	$('.comments').delegate('.vote', 'click', function(e) {
 		
@@ -393,6 +396,13 @@ $(document).ready(function() {
 			url: 'CommentServlet',
 			data: params,
 			success: function(data) {
+				
+				if(data.status === "failure") {
+					alert('You are not logged in');
+					window.location.replace('/Play');
+					return;
+				}
+				
 				$('.write-comment').val('');
 				
 				var count = parseInt($('#comment-number').text());
@@ -433,5 +443,5 @@ $(document).ready(function() {
 	getVideo();
 	getComments();
 	getVotes();
-	follows();
+	//follows();
 });
