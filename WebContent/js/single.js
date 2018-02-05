@@ -113,7 +113,7 @@ $(document).ready(function() {
 		}
 		
 		$.get('CommentServlet', data, function(data) {
-			//console.log(data);
+
 			$('#comment-number').append(data.count);
 			
 			for(i in data.comments) {

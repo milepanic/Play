@@ -18,7 +18,6 @@ import play.dao.CommentDAO;
 import play.dao.UserDAO;
 import play.model.Comment;
 import play.model.User;
-import play.model.User.Role;
 
 public class CommentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;

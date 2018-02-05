@@ -20,12 +20,12 @@ public class VoteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String action = request.getParameter("action");
+		String action = request.getParameter("action");		
 		int voteableId = Integer.parseInt(request.getParameter("voteableId"));
 		String voteableType = request.getParameter("voteableType");
 		
 		// prvi uslov je kada se ucita stranica da provjeri da li je korisnik glasao
-		// drugi je da ispise broj up/down vote-a
+		// drugi je da ispise broj up/down vote-a videa ili komentara
 		if(action.contains("check-vote")) {
 			int userId = Integer.parseInt(request.getParameter("userId"));
 			

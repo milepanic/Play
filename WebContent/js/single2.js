@@ -45,16 +45,17 @@ $(document).ready(function() {
 				$('.comments-hide').remove();
 			}
 			
+			//getComments(data.auth, videoId);
 			follows(data.auth, userId);
 			voted(data.auth, videoId);
+			getComments(data.auth);
 		});
 		
 		
 	}
 	
 	// uzima sve komentare za odredjeni video
-	function getComments() {
-		
+	function getComments(auth) {
 		$('.comments').empty();
 		
 		var order = $('#comments-order').find(":selected").text();
@@ -65,9 +66,12 @@ $(document).ready(function() {
 		}
 		
 		$.get('CommentServlet', data, function(data) {
-			$('#comment-number').append(data.count);
+			$('#comment-number').empty().append(data.count);
 			
 			for(i in data.comments) {
+				
+				getCommentVotes(data.comments[i].id);
+				commentVoted(auth, data.comments[i].id);
 				
 				$('.comments').append(
 					'<div class="comment">' +
@@ -81,13 +85,13 @@ $(document).ready(function() {
 						'</div>' +
 						'<div class="comment-votes" data-type="comment" data-id="' + data.comments[i].id + '">' +
 							'<a href="#" class="vote" data-vote="downvote">' +
-		    					'<span id="down">' +
-									'<i class="fa fa-thumbs-down"></i> <span class="comment-number">0</span>' +
+		    					'<span class="down">' +
+									'<i class="fa fa-thumbs-down"></i> <span class="comment-number"></span>' +
 								'</span>' +
 		    				'</a>' +
 							'<a href="#" class="vote" data-vote="upvote">' +
-	        					'<span id="up">' +
-									'<i class="fa fa-thumbs-up"></i> <span class="comment-number">0</span>' +
+	        					'<span class="up">' +
+									'<i class="fa fa-thumbs-up"></i> <span class="comment-number"></span>' +
 								'</span>' +
 	        				'</a>' +
 						'</div>' +
@@ -100,7 +104,7 @@ $(document).ready(function() {
 	
 	// parametri sortiranja komentara
 	$('.order-val').on('click', function() {
-		getComments();
+		getComments(eventAuth);
 	});
 	
 	// komentarisanje
@@ -151,12 +155,12 @@ $(document).ready(function() {
 						'</div>' +
 						'<div class="comment-votes" data-type="comment" data-id="' + data.comment.id + '">' +
 							'<a href="#" class="vote" data-vote="downvote">' +
-		    					'<span id="down">' +
+		    					'<span class="down">' +
 									'<i class="fa fa-thumbs-down"></i> <span class="comment-number">0</span>' +
 								'</span>' +
 		    				'</a>' +
 							'<a href="#" class="vote" data-vote="upvote">' +
-	        					'<span id="up">' +
+	        					'<span class="up">' +
 									'<i class="fa fa-thumbs-up"></i> <span class="comment-number">0</span>' +
 								'</span>' +
 	        				'</a>' +
@@ -246,7 +250,6 @@ $(document).ready(function() {
 		}
 		
 		$.get('VoteServlet', data, function(data) {
-			console.log(data);
 			$("#upvote").find('.number').empty().append(data.upvotes);
 			$("#downvote").find('.number').empty().append(data.downvotes);
 		});
@@ -324,6 +327,24 @@ $(document).ready(function() {
 		$.post('VoteServlet', data);
 	});
 	
+	// prikazuje broj like/dislike komentara
+	function getCommentVotes(id) {
+		
+		var data = {
+			action: "get-comment-votes",
+			voteableType: "comment",
+			voteableId: id
+		}
+		
+		$.get('VoteServlet', data, function(data) {
+			
+			var comment = $('[data-id=' + id + ']');
+			
+			comment.find('.down').find('.comment-number').empty().append(data.downvotes);
+			comment.find('.up').find('.comment-number').empty().append(data.upvotes);
+		});
+	}
+	
 	// Like/dislike komentara
 	$('.comments').delegate('.vote', 'click', function(e) {
 		e.preventDefault();
@@ -344,20 +365,27 @@ $(document).ready(function() {
 		if($(this).data('vote') == 'upvote')
 			vote = true;
 		
-		// postavlja izgled
-		var span = $(this).find('span');
-		var number = parseInt(span.find('.comment-number').text());
-		// && $('#down').parent().parent().data('id') == id
+		// susjedni vote btn
 		if(vote) {
-			if($('#down').hasClass('voted')) {
-				$('#down').removeClass('voted');
-				var nmb = $('#down').find('.comment-number').text();
+			var down = $(this).parent().find('.down');
+		}
+		else
+			var up = $(this).parent().find('.up');
+		
+		// postavlja izgled
+		var span = $(this).children(':first');
+		var number = parseInt(span.find('.comment-number').text());
+		
+		if(vote) {
+			if(down.hasClass('voted')) {
+				down.removeClass('voted');
+				var nmb = down.find('.comment-number').text();
 				var otherNumber = parseInt(nmb);
 				otherNumber--;
-				$('#down').find('.comment-number').empty().append(otherNumber);
+				down.find('.comment-number').empty().append(otherNumber);
 			}
 			
-			if($('#up').hasClass('voted'))
+			if(span.hasClass('voted'))
 				number--;
 			else
 				number++;
@@ -365,15 +393,15 @@ $(document).ready(function() {
 			span.find('.comment-number').empty().append(number);
 		// downvote
 		} else {
-			if($('#up').hasClass('voted')) {
-				$('#up').removeClass('voted');
-				var nmb = $('#up').find('.comment-number').text();
+			if(up.hasClass('voted')) {
+				up.removeClass('voted');
+				var nmb = up.find('.comment-number').text();
 				var otherNumber = parseInt(nmb);
 				otherNumber--;
-				$('#up').find('.comment-number').empty().append(otherNumber);
+				up.find('.comment-number').empty().append(otherNumber);
 			}
 			
-			if($('#down').hasClass('voted'))
+			if(span.hasClass('voted'))
 				number--;
 			else
 				number++;
@@ -408,12 +436,36 @@ $(document).ready(function() {
 		}
 		
 		$.get('VoteServlet', data, function(data) {
-			//console.log(data);
+			
 			if(data.vote != null)
 				if(data.vote.vote)
 					$("#upvote").addClass('voted');
 				else
 					$("#downvote").addClass('voted');
+		});
+	}
+	
+	// provjerava da li je korisnik glasao za komentare
+	function commentVoted(auth, id) {
+		
+		var data = {
+			action: "check-vote",
+			userId: auth.id,
+			voteableId: id,
+			voteableType: "comment"
+		}
+		
+		$.get('VoteServlet', data, function(data) {
+			
+			if(data.vote == null) return;
+			
+			var comment = $('[data-id=' + id + ']');
+			
+			if(data.vote.vote) {
+				comment.find('.up').addClass('voted');
+			} else {
+				comment.find('.down').addClass('voted');
+			}
 		});
 	}
 	
