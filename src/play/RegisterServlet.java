@@ -33,7 +33,7 @@ public class RegisterServlet extends HttpServlet {
 		String password = request.getParameter("password");
 		String firstName = request.getParameter("firstname");
 		String lastName = request.getParameter("lastname");
-		String email = request.getParameter("email");
+		String email = request.getParameter("email");		
 		String description = request.getParameter("description");
 		
 		String message = "Successfully logged in";
@@ -42,7 +42,9 @@ public class RegisterServlet extends HttpServlet {
 		if(UserDAO.get(username) != null) {
 			message = "That username is already taken";
 			status = "username-fail";
-		// dodati provjeru emaila
+		} else if(email.isEmpty()) {
+			message = "Email can't be empty";
+			status = "email-fail";
 		} else {
 			User user = new User();
 			
@@ -58,7 +60,6 @@ public class RegisterServlet extends HttpServlet {
 			
 			UserDAO.create(user);
 			
-			//HttpSession session = request.getSession();
 			session.setAttribute("auth", user);
 		}
 		

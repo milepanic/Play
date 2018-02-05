@@ -21,13 +21,19 @@ $(document).ready(function () {
 		
 		$.post('RegisterServlet', data, function(data) {
 			console.log(data);
-			if(data.status === "failure") {
+			if(data.status === "username-fail") {
 				$("#username").css('border-color', 'red');
-				$("#message").append(data.message);
+				$("#username-message").append(data.message);
 				return;
 			}
 			
-			window.location.replace('/Play');
+			if(data.status === "email-fail") {
+				$("#email").css('border-color', 'red');
+				$("#email-message").append(data.message);
+				return;
+			}
+ 			
+			//window.location.replace('/Play');
 		});
 	});
 	

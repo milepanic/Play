@@ -51,7 +51,7 @@ public class UserDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		try {
-			String query = "SELECT id, username, firstname, lastname, email, role "
+			String query = "SELECT id, username, firstname, lastname, email, banned, role "
 					+ "FROM users ORDER BY registered_at DESC";
 
 			pstmt = conn.prepareStatement(query);
@@ -66,14 +66,17 @@ public class UserDAO {
 				String firstName = rset.getString(index++);
 				String lastName = rset.getString(index++);
 				String email = rset.getString(index++);
+				boolean banned = rset.getBoolean(index++);
 				Role role = Role.valueOf(rset.getString(index++));
 
 				User user = new User();
 				
+				user.setId(id);
 				user.setUsername(username);
 				user.setFirstName(firstName);
 				user.setLastName(lastName);
 				user.setEmail(email);
+				user.setBanned(banned);
 				user.setRole(role);
 				
 				users.add(user);
@@ -204,7 +207,8 @@ public class UserDAO {
 
 		PreparedStatement pstmt = null;
 		try {
-			String query = "UPDATE users SET firstname = ?, lastname = ?, email = ?, description = ? WHERE username = ?";
+			String query = "UPDATE users SET firstname = ?, lastname = ?, "
+					+ "email = ?, description = ?, banned = ?, role = ? WHERE username = ?";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
@@ -213,6 +217,8 @@ public class UserDAO {
 			pstmt.setString(index++, user.getLastName());
 			pstmt.setString(index++, user.getEmail());
 			pstmt.setString(index++, user.getDescription());
+			pstmt.setBoolean(index++, user.isBanned());
+			pstmt.setString(index++, user.getRole().toString());
 			pstmt.setString(index++, user.getUsername());
 			System.out.println(pstmt);
 

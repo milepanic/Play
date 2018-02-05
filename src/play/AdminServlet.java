@@ -30,7 +30,7 @@ public class AdminServlet extends HttpServlet {
 		if(auth == null || auth.getRole() != Role.ADMIN) {
 			status = "unauthorized";
 		} else {
-			List<User> users = UserDAO.getAll();			
+			List<User> users = UserDAO.getAll();
 			data.put("users", users);
 		}
 		
@@ -45,8 +45,24 @@ public class AdminServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		String action = request.getParameter("action");
+		int id = Integer.parseInt(request.getParameter("id"));
+		User user = UserDAO.get(id);
+		
+		if(action.contentEquals("ban")) {
+			boolean ban = Boolean.parseBoolean(request.getParameter("banned"));
+			
+			user.setBanned(ban);
+			UserDAO.update(user);
+		} else if(action.contentEquals("role")) {
+			Role role = Role.valueOf(request.getParameter("role"));
+			
+			if(role.equals(Role.ADMIN)) role = Role.USER;
+			else role = Role.ADMIN;
+			
+			user.setRole(role);
+			UserDAO.update(user);
+		}
 	}
 
 }

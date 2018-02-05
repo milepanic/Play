@@ -19,7 +19,7 @@ $(document).ready(function() {
 		$.get('VideoServlet', data, function(data) {
 			userId = data.video.user.id;
 			
-			$(document).attr('title', data.video.name);
+			$(document).attr('title', data.video.name + ' - Play');
 			
 			$('.profile-followers').append(data.count + ' Followers');
 			
@@ -28,7 +28,7 @@ $(document).ready(function() {
 			video_box.find('.views').text(data.video.views);
 			video_box.find('.date').text(data.video.createdAt);
 			video_box.find('.video-single-profile').attr('data-id', data.video.user.id);
-			video_box.find('.profile-url').attr('href', 'profile.html?username=' + data.video.user.username);
+			video_box.find('.profile-url').attr('href', 'profile.html?id=' + data.video.user.id);
 			video_box.find('.profile-name').text(data.video.user.username);
 			video_box.find('.video-single-description > p').text(data.video.description);
 			

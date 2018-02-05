@@ -6,7 +6,11 @@ $(document).ready(function() {
 
 		$.get('IndexServlet', function(data) {
 			
-			for(i in data.videos) {
+			for(i in data.videos) {				
+				var date = new Date(parseInt(data.videos[i].createdAt.toString().substr(6)));
+				var month = date.getMonth() + 1;
+				var fullDate = date.getDate() + "." + month + "." + date.getFullYear();
+				console.log(fullDate);
 				
 				$('.videos-box').append(
 					'<div class="video-box">' +
@@ -21,7 +25,7 @@ $(document).ready(function() {
 							'</a><br>' +
 							'<a href="profile.html?id=' + data.videos[i].user.id +'" class="channel-name">' + data.videos[i].user.username + '</a><br>' +
 							'<span class="views"><i class="fa fa-eye"></i> ' + data.videos[i].views + ' Views </span>&nbsp;' +
-							'<span class="date"><i class="fa fa-clock-o"></i> ' + data.videos[i].createdAt + '</span>' +
+							'<span class="date"><i class="fa fa-clock-o"></i> ' + fullDate + '</span>' +
 						'</div>' +
 					'</div>'
 				);
