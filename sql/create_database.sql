@@ -40,11 +40,20 @@ CREATE TABLE videos (
 	FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-INSERT INTO videos (name, url, thumbnail, user_id) VALUES 
-	('Marshall Jefferson - Floating', 'https://www.youtube.com/embed/EGuiXTUQeH4', 'https://img.youtube.com/vi/EGuiXTUQeH4/0.jpg', 1),
-	('Dave Brubeck - Take Five', 'https://www.youtube.com/embed/vmDDOFXSgAs', 'https://img.youtube.com/vi/vmDDOFXSgAs/0.jpg', 2),
-	('Ryo Fukui - Scenery 1976 (FULL ALBUM)', 'https://www.youtube.com/embed/Hrr3dp7zRQY', 'https://img.youtube.com/vi/Hrr3dp7zRQY/0.jpg', 3),
-	('Blues Brothers - Sweet Home Chicago', 'https://www.youtube.com/embed/79vCiXg3njY', 'https://img.youtube.com/vi/79vCiXg3njY/0.jpg', 4);
+INSERT INTO videos (name, url, thumbnail, description, visibility, user_id) VALUES 
+	('Marshall Jefferson - Floating', 'https://www.youtube.com/embed/EGuiXTUQeH4', 'https://img.youtube.com/vi/EGuiXTUQeH4/0.jpg', '', 'PUBLIC', 1),
+	('Dave Brubeck - Take Five', 'https://www.youtube.com/embed/vmDDOFXSgAs', 'https://img.youtube.com/vi/vmDDOFXSgAs/0.jpg', '', 'UNLISTED', 1),
+	('Ryo Fukui - Scenery 1976 (FULL ALBUM)', 'https://www.youtube.com/embed/Hrr3dp7zRQY', 'https://img.youtube.com/vi/Hrr3dp7zRQY/0.jpg', '', 'PRIVATE', 1),
+	('The Doors - L. A. Woman', 'https://www.youtube.com/embed/JskztPPSJwY', 'https://img.youtube.com/vi/JskztPPSJwY/0.jpg', '', 'PUBLIC', 1),
+	('Wu-Tang Clan - Forever FULL ALBUM', 'https://www.youtube.com/embed/5CzsXvAZ6R4', 'https://img.youtube.com/vi/5CzsXvAZ6R4/0.jpg', '', 'PUBLIC', 1),
+	('Bob Marley - I Shot The Sheriff', 'https://www.youtube.com/embed/2XiYUYcpsT4', 'https://img.youtube.com/vi/2XiYUYcpsT4/0.jpg', '', 'PUBLIC', 1),
+	('Motorhead - Ace Of Spades', 'https://www.youtube.com/embed/vcf7DnHi54g', 'https://img.youtube.com/vi/vcf7DnHi54g/0.jpg', '*NOTE* its for entertainment purposes only', 'UNLISTED', 2),
+	('Marko Nastic - Smekerica Kulijana', 'https://www.youtube.com/embed/gM-QEcuDY8I', 'https://img.youtube.com/vi/gM-QEcuDY8I/0.jpg', '', 'PUBLIC', 2),
+	('WRC - ADAC Rallye Deutschland 2016', 'https://www.youtube.com/embed/ZQ7XIGVCwsA', 'https://img.youtube.com/vi/ZQ7XIGVCwsA/0.jpg', 'FIA World Rally Championship - ADAC Rallye Deutschland 2016', 'PUBLIC', 2),
+	('Eric B. & Rakim - Paid In Full', 'https://www.youtube.com/embed/E7t8eoA_1jQ', 'https://img.youtube.com/vi/E7t8eoA_1jQ/0.jpg', '', 'PUBLIC', 3),
+	('Carl Cox - Fantasee', 'https://www.youtube.com/embed/-Ndw3lp0D7E', 'https://img.youtube.com/vi/-Ndw3lp0D7E/0.jpg', 'Carl Cox - Fantasee 
+Written and produced by Carl Cox, Davide Carbone and Josh Abrahams ', 'PUBLIC', 4),
+	('Kavinsky - Pacific Coast Highway', 'https://www.youtube.com/embed/-5FKNViujeM', 'https://img.youtube.com/vi/-5FKNViujeM/0.jpg', 'Buy the vinyl - support the author', 'PRIVATE', 4);
 	
 CREATE TABLE comments (
 	id INT AUTO_INCREMENT,

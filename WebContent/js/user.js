@@ -1,24 +1,48 @@
-function proceed(data) {
-	
-	var id = window.location.search.slice(1).split('&')[0].split('=')[1];
-	
-	if(data.auth && data.auth.id == id)
-		$('.profile-action').append('<a class="btn btn-default follow-btn"' +
-				' href="edit-profile.html?id=' + id + '">Edit Profile</a>');
-	else
-		$('.profile-action').append('<button class="btn btn-primary follow-btn">+ Follow</button>');
-}
+function proceed(data) {}
 
 $(document).ready(function() {
 	
 	$("head").append('<script type="text/javascript" src="js/session.js"></script>');
+	var id = window.location.search.slice(1).split('&')[0].split('=')[1];
 	
 	function getUser() {
 		
-		var id = window.location.search.slice(1).split('&')[0].split('=')[1];
 		var profile = $('.profile-container');
 		
 		$.get('UserServlet', {'id': id}, function(data) {
+			
+			if(data.auth !== null) {
+				if(data.auth.id == id) {
+					$('.profile-action').append('<a class="btn btn-default follow-btn"' +
+							' href="edit-profile.html?id=' + id + '">Edit Profile</a>');
+				} else {
+					$('.profile-action').append('<button class="btn btn-primary follow-btn">+ Follow</button>');
+					
+					if(data.auth.role === "ADMIN") {
+						if(data.user.banned) {
+							$('.profile-action').append('<button id="block-user-btn" data-blocked="false"' +
+							'class="btn btn-warning follow-btn">Unban</button>');
+						} else {
+							$('.profile-action').append('<button id="block-user-btn" data-blocked="true"' +
+							'class="btn btn-danger follow-btn">Ban</button>');
+						}
+						$('.profile-action').append('<button class="btn btn-success follow-btn"' +
+								' id="change-role-btn" data-role="' + data.user.role + '">Change role</button>');
+						$('.profile-action').append('<a class="btn btn-default follow-btn"' +
+								' href="edit-profile.html?id=' + id + '">Edit Profile</a>');
+					}
+				}
+			}
+			
+			if(data.message === "banned-user") {
+				$('.profile-container').remove();
+				$('.message-div').append('<h2>This user is banned</h2>');
+				return;
+			}
+			
+			if(data.user.banned)
+				$('.message-div').append('<h2>You are banned</h2>');
+			
 			$(document).attr("title", data.user.username + " - Play");
 			
 			$('.profile-videos').attr('href', "profile.html?id=" + data.user.id);
@@ -88,14 +112,18 @@ $(document).ready(function() {
 				$('.about-date').text(data.user.registeredAt);
 				$('.about-type').text(data.user.role);
 				
-			} else if (window.location.pathname == '/Play/edit-profile.html') {				
+			} else if (window.location.pathname == '/Play/edit-profile.html') {
+				
+				if(data.auth === null || data.auth.id !== data.user.id && data.auth.role !== "ADMIN") {
+					window.location.replace('/Play');
+					return;
+				}
+				
 				$('#username').val(data.user.username);
 				$('#firstname').val(data.user.firstName);
 				$('#lastname').val(data.user.lastName);
 				$('#email').val(data.user.email);
 				$('#description').val(data.user.description);
-				
-				
 				
 				$("#submit").on('click', function (e) {
 					e.preventDefault();
@@ -147,6 +175,38 @@ $(document).ready(function() {
 			}
 		});
 	}
+	
+	$(".profile-action").delegate('#block-user-btn', 'click', function(e) {
+		e.preventDefault();
+		
+		var blocked = $(this).data('blocked');
+		
+		var data = {
+			action: "ban",
+			id: id,
+			banned: blocked
+		}
+		
+		$.post('AdminServlet', data, function(data) {
+			location.reload();
+		});
+	});
+	
+	$(".profile-action").delegate('#change-role-btn', 'click', function(e) {
+		e.preventDefault();
+		
+		var role = $(this).data('role');
+		
+		var data = {
+			action: "role",
+			id: id,
+			role: role
+		}
+		
+		$.post('AdminServlet', data, function(data) {
+			location.reload();
+		});
+	});
 	
 	getUser();
 });

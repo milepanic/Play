@@ -45,13 +45,18 @@ public class AdminServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		User auth = (User) session.getAttribute("auth");
+		
+		if(auth.getRole() != Role.ADMIN) return;
+
 		String action = request.getParameter("action");
 		int id = Integer.parseInt(request.getParameter("id"));
 		User user = UserDAO.get(id);
-		
+		System.out.println("action: " + action);
 		if(action.contentEquals("ban")) {
 			boolean ban = Boolean.parseBoolean(request.getParameter("banned"));
-			
+			System.out.println("ban: " + ban);
 			user.setBanned(ban);
 			UserDAO.update(user);
 		} else if(action.contentEquals("role")) {

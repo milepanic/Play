@@ -1,3 +1,5 @@
+function proceed() {}
+
 $(document).ready(function() {
 	
 	$("head").append('<script type="text/javascript" src="js/session.js"></script>');

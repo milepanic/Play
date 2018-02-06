@@ -18,14 +18,36 @@ import play.dao.FollowDAO;
 import play.dao.UserDAO;
 import play.dao.VideoDAO;
 import play.model.User;
+import play.model.User.Role;
 
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		User auth = (User) session.getAttribute("auth");
+		
 		int id = Integer.parseInt(request.getParameter("id"));
 		
 		User user = UserDAO.get(id);
+		
+		Map<String, Object> data = new HashMap<>();
+		String message = "success";
+		
+		if(user.isBanned() && auth == null 
+				|| user.isBanned() && auth != null && auth.getRole() != Role.ADMIN && auth.getId() != user.getId()) {
+			message = "banned-user";
+			
+			data.put("message", message);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonData = mapper.writeValueAsString(data);
+			System.out.println(jsonData);
+
+			response.setContentType("application/json");
+			response.getWriter().write(jsonData);
+			return;
+		}
 		
 		int followersCount = FollowDAO.count(user.getId());
 		int viewsCount = VideoDAO.countViews(id);
@@ -36,9 +58,9 @@ public class UserServlet extends HttpServlet {
 		count.add(followersCount);
 		count.add(videosCount);
 		
-		Map<String, Object> data = new HashMap<>();
 		data.put("user", user);
 		data.put("count", count);
+		data.put("auth", auth);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonData = mapper.writeValueAsString(data);
@@ -58,7 +80,7 @@ public class UserServlet extends HttpServlet {
 		String username = request.getParameter("username");
 		User user = UserDAO.get(username);
 		
-		if(auth == null || auth.getId() != user.getId()) {
+		if(auth == null || auth.getId() != user.getId() && auth.getRole() != Role.ADMIN) {
 			status = "failure";
 			
 			data.put("status", status);
@@ -71,7 +93,6 @@ public class UserServlet extends HttpServlet {
 			response.getWriter().write(jsonData);
 			return;
 		}
-		
 		
 		String firstName = request.getParameter("firstname");
 		String lastName = request.getParameter("lastname");

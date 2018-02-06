@@ -57,6 +57,7 @@ public class VideoDAO {
 		try {
 			String query = "SELECT id, name, url, thumbnail, views, created_at, user_id "
 					+ "FROM videos WHERE visibility = 'PUBLIC' AND blocked = false AND deleted = false "
+					+ "AND user_id NOT IN (SELECT id FROM users WHERE banned = true) "
 					+ "ORDER BY created_at DESC";
 
 			pstmt = conn.prepareStatement(query);
@@ -261,7 +262,10 @@ public class VideoDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		try {
-			String query = "SELECT * FROM videos ORDER BY RAND() LIMIT ?";
+			String query = "SELECT * FROM videos WHERE visibility = 'PUBLIC' "
+					+ "AND blocked = false AND deleted = false "
+					+ "AND user_id NOT IN (SELECT id FROM users WHERE banned = true) "
+					+ "ORDER BY RAND() LIMIT ?";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
@@ -398,7 +402,8 @@ public class VideoDAO {
 
 		PreparedStatement pstmt = null;
 		try {
-			String query = "UPDATE videos SET description = ?, visibility = ?, commentable = ?, voteable = ?, views = ? WHERE id = ?";
+			String query = "UPDATE videos SET description = ?, visibility = ?, commentable = ?, "
+					+ "voteable = ?, blocked = ?, views = ? WHERE id = ?";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
@@ -407,6 +412,7 @@ public class VideoDAO {
 			pstmt.setString(index++, video.getVisibility().toString());
 			pstmt.setBoolean(index++, video.isCommentable());
 			pstmt.setBoolean(index++, video.isVoteable());
+			pstmt.setBoolean(index++, video.isBlocked());
 			pstmt.setInt(index++, video.getViews());
 			pstmt.setInt(index++, video.getId());
 			System.out.println(pstmt);

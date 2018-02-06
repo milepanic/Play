@@ -1,3 +1,39 @@
+/* Funkcije
+ * proceed() - prosledjena iz session.js
+ * 
+ * getVideo() - uzima sa servera video i ulogovanog korisnika,
+ * 	appenduje podatke o videu i poziva funkcije 
+ * 	follows(auth, userId), voted(auth, videoId) i getComments(auth)
+ * 
+ * getComments() - appenduje komentare za odredjeni video i poziva funkcije
+ * 	getCommentVotes(data.comments[i].id) commentVoted(auth, data.comments[i].id);
+ * 
+ * on.click - poziva funkciju getComments() kada se promijeni parametar sortiranja
+ * 
+ * on.click - postavlja komentar
+ * 
+ * follows(auth, userId) - provjerava da li korisnik prati autora ili ne 
+ * 	ili ako je on autor ili admin pojavice se edit video btn
+ * 
+ * on.click - zaprati-otprati korisnika
+ * 
+ * getVotes() - prikazuje broj up/down vote-a na video
+ * 
+ * on.click - Like/dislike videa
+ * 
+ * getCommentVotes(id) - prikazuje broj like/dislike komentara
+ * 
+ * on.click - Like/dislike komentara
+ * 
+ * voted(auth, id) - da li je korisnik glasao za trenutni video
+ * 
+ * commentVoted(auth, id) - da li je korisnik glasao za komentare
+ * 
+ * sidebar() - izlistava 4 random videa u sidebar
+ * 
+ * 
+ */
+
 function proceed() {}
 
 $(document).ready(function() {
@@ -17,9 +53,18 @@ $(document).ready(function() {
 		}
 		
 		$.get('VideoServlet', data, function(data) {
-			userId = data.video.user.id;
+			console.log(data);
+			
+			if(data.status === "fail") {
+				video_box.remove();
+				$(".message-div").append('<h2>' + data.message + '</h2>');
+				$(document).attr('title', 'Video not avaiable - Play');
+				return;
+			}
 			
 			$(document).attr('title', data.video.name + ' - Play');
+			
+			userId = data.video.user.id;
 			
 			$('.profile-followers').append(data.count + ' Followers');
 			
@@ -45,7 +90,6 @@ $(document).ready(function() {
 				$('.comments-hide').remove();
 			}
 			
-			//getComments(data.auth, videoId);
 			follows(data.auth, userId);
 			voted(data.auth, videoId);
 			getComments(data.auth);
@@ -176,7 +220,7 @@ $(document).ready(function() {
 	
 	
 	// provjerava da li korisnik prati autora ili ne
-	// ili ako je on autor pojavice se edit video btn
+	// ili ako je on autor ili admin pojavice se edit video btn
 	function follows(auth, userId) {
 		
 		if(auth == null) {
@@ -201,6 +245,10 @@ $(document).ready(function() {
 					$('.follow-edit').append('<button class="btn btn-default follow-btn">Following</button>');
 				else
 					$('.follow-edit').append('<button class="btn btn-primary follow-btn">+ Follow</button>');
+				
+				if(auth.role === "ADMIN")
+					$('.follow-edit').append('<a href="edit-video.html?id=' + videoId + '"' +
+							'class="btn btn-default edit-btn">Edit Video</a>');
 			});
 			
 		}

@@ -1,3 +1,5 @@
+function proceed() {}
+
 $(document).ready(function() {
 	
 	$("head").append('<script type="text/javascript" src="js/session.js"></script>');
@@ -10,6 +12,11 @@ $(document).ready(function() {
 	}
 	
 	$.get('VideoServlet', data, function(data) {
+
+		if(data.auth === null || data.auth.id !== data.video.user.id && data.auth.role !== "ADMIN") {
+			window.location.replace('/Play');
+			return;
+		}
 		
 		var name = data.video.name;
 		
@@ -35,6 +42,20 @@ $(document).ready(function() {
 		
 		if(data.video.voteable == true)
 			$("#voteable").prop('checked', true);
+		
+		if(data.auth.role === "ADMIN") {
+			
+			if(data.video.blocked) {
+				$('#block-h3').append('Unblock this video');
+				$('#block-form').find('button').append('Unblock');
+				$('#block').data('blocked', false);
+			} else {
+				$('#block-h3').append('Block this video');
+				$('#block-form').find('button').append('Block');
+				$('#block').data('blocked', true);
+			}
+			$('#block-div').removeAttr('hidden');
+		}
 	});
 	
 	$("#submit").on('click', function(e) {
@@ -71,6 +92,22 @@ $(document).ready(function() {
 			id: id,
 			role: eventAuth.role,
 			type: "delete"
+		}
+		
+		$.post('VideoServlet', data, function(data) {
+			window.location.replace('/Play');
+		});
+	});
+	
+	$('#block').on('click', function(e) {
+		e.preventDefault();
+		
+		var blocked = $(this).data('blocked');
+		
+		var data = {
+			id: id,
+			blocked: blocked,
+			type: "block"
 		}
 		
 		$.post('VideoServlet', data, function(data) {

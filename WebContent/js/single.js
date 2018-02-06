@@ -73,6 +73,8 @@ $(document).ready(function() {
 		$.get('VideoServlet', data, function(data) {
 			userId = data.video.user.id;
 			
+			console.log(data);
+			
 			$(document).attr('title', data.video.name);
 			
 			$('.profile-followers').append(data.count + ' Followers');

@@ -30,23 +30,41 @@ public class VideoServlet extends HttpServlet {
 		String page = request.getParameter("page");
 		
 		Map<String, Object> data = new HashMap<>();
+		String status = "sucess";
+		String message = "success";
 		
 		if (page.contentEquals("single")) {
 			HttpSession session = request.getSession();
 			User auth = (User) session.getAttribute("auth");
-			
+
 			Video video = VideoDAO.get(id);
 			
-			int views = video.getViews();
-			views++;
-			video.setViews(views);
-			VideoDAO.update(video);
-			
-			int count = FollowDAO.count(video.getUser().getId());
-			
-			data.put("video", video);
-			data.put("count", count);
-			data.put("auth", auth);
+			if(video.isBlocked() && auth == null
+					|| video.isBlocked() && auth != null 
+						&& auth.getRole() == Role.USER && auth.getId() != video.getUser().getId()) {
+				status = "fail";
+				message = "This video is blocked";
+			} else if(video.getVisibility() == Visibility.PRIVATE && auth == null
+				|| video.getVisibility() == Visibility.PRIVATE
+					&& auth.getRole() == Role.USER && auth.getId() != video.getUser().getId()) {
+				status = "fail";
+				message = "This video is private";
+			} else if(video.getUser().isBanned() && auth == null 
+				|| video.getUser().isBanned() && auth.getRole() == Role.USER && auth.getId() != video.getUser().getId()) { 
+				status = "fail";
+				message = "The user of this video is banned";
+			} else {
+				int views = video.getViews();
+				views++;
+				video.setViews(views);
+				VideoDAO.update(video);
+				
+				int count = FollowDAO.count(video.getUser().getId());
+				
+				data.put("video", video);
+				data.put("count", count);
+				data.put("auth", auth);
+			}			
 		} else if (page.contentEquals("user")) {
 			String order = request.getParameter("order");
 			String param = "created_at";
@@ -69,6 +87,8 @@ public class VideoServlet extends HttpServlet {
 			List <Video> videos = VideoDAO.random(4);
 			data.put("videos", videos);
 		}
+		data.put("status", status);
+		data.put("message", message);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonData = mapper.writeValueAsString(data);
@@ -106,6 +126,16 @@ public class VideoServlet extends HttpServlet {
 			
 			VideoDAO.delete(id, role);
 			return;
+		} else if(type.contentEquals("block")) {
+			int id = Integer.parseInt(request.getParameter("id"));
+			boolean blocked = Boolean.parseBoolean(request.getParameter("blocked"));
+			
+			if(!auth.getRole().equals(Role.ADMIN)) return;
+			
+			Video video = VideoDAO.get(id);
+			video.setBlocked(blocked);
+			VideoDAO.update(video);
+			return;
 		}
 		
 		String description = request.getParameter("description");
@@ -126,6 +156,7 @@ public class VideoServlet extends HttpServlet {
 			VideoDAO.update(video);
 			return;
 		} else {
+		
 			String YoutubeUrl = request.getParameter("url");
 			String name = request.getParameter("name");
 			int userId = Integer.parseInt(request.getParameter("userId"));
@@ -147,7 +178,6 @@ public class VideoServlet extends HttpServlet {
 			
 			VideoDAO.create(video);
 			
-			//Map<String, Object> data = new HashMap<>();
 			data.put("id", videoId);
 			
 			ObjectMapper mapper = new ObjectMapper();
