@@ -11,12 +11,17 @@ $(document).ready(function() {
 		
 		$.get('UserServlet', {'id': id}, function(data) {
 			
+			if(data.message === "banned-user") {
+				$('.profile-container').remove();
+				$('.message-div').append('<h2>This user is banned</h2>');
+			}
+
 			if(data.auth !== null) {
 				if(data.auth.id == id) {
 					$('.profile-action').append('<a class="btn btn-default follow-btn"' +
 							' href="edit-profile.html?id=' + id + '">Edit Profile</a>');
 				} else {
-					$('.profile-action').append('<button class="btn btn-primary follow-btn">+ Follow</button>');
+					follows(data.auth, data.user.id);
 					
 					if(data.auth.role === "ADMIN") {
 						if(data.user.banned) {
@@ -32,12 +37,6 @@ $(document).ready(function() {
 								' href="edit-profile.html?id=' + id + '">Edit Profile</a>');
 					}
 				}
-			}
-			
-			if(data.message === "banned-user") {
-				$('.profile-container').remove();
-				$('.message-div').append('<h2>This user is banned</h2>');
-				return;
 			}
 			
 			if(data.user.banned)
@@ -175,6 +174,59 @@ $(document).ready(function() {
 			}
 		});
 	}
+	
+	function follows(auth, userId) {
+		
+		//follow/following btn or edit video
+		if(auth.id == userId) return;
+		
+		var data = {
+			page: "single",
+			follower_id: auth.id,
+			userId: userId
+		}
+		
+		$.get('FollowServlet', data, function(data) {
+			console.log(data);
+			if(data.follow)
+				$('.profile-action').prepend('<button class="btn btn-default follow-btn" id="follow">Following</button>');
+			else
+				$('.profile-action').prepend('<button class="btn btn-primary follow-btn" id="follow">+ Follow</button>');
+		});
+	}
+	
+	$('.profile-action').delegate('#follow', 'click', function (e) {
+		e.preventDefault();
+		
+		if (eventAuth == null) {
+			if (confirm("You must be logged in to follow a user. \nDo you want to log in now?"))
+				window.location.replace('login.html');
+			else
+				return;
+		}
+		
+		if (eventAuth.id == id)
+			return;
+		
+		var follow = $('#follow');
+		
+		if (follow.hasClass('btn-primary')) {
+			follow.removeClass('btn-primary');
+			follow.addClass('btn-default');
+			follow.text('Following');
+		} else {
+			follow.removeClass('btn-default');
+			follow.addClass('btn-primary');
+			follow.text('+ Follow');
+		}
+		
+		var data = {
+			follower_id: eventAuth.id,
+			user_id: id
+		}
+		
+		$.post('FollowServlet', data);
+	});
 	
 	$(".profile-action").delegate('#block-user-btn', 'click', function(e) {
 		e.preventDefault();
