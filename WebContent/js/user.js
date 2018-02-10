@@ -141,6 +141,8 @@ $(document).ready(function() {
 				})
 			} else if (window.location.pathname == '/Play/follows.html') {
 				
+				var auth = data.auth;
+				
 				var data = {
 					page: "follows",
 					userId: id
@@ -149,6 +151,9 @@ $(document).ready(function() {
 				$.get('FollowServlet', data, function(data) {
 					console.log(data);
 					for(i in data.users) {
+						
+						followsUsers(auth, data.users[i].id);
+						
 						$('.follows').append(
 							'<div class="col-md-4">' +
 								'<div class="user-box">' +
@@ -159,7 +164,7 @@ $(document).ready(function() {
 									'<div class="user-right col-md-7">' +
 										'<a class="user-username" href="profile.html?id=' + data.users[i].id + '">' + data.users[i].username + '</a>' +
 										'<p class="user-followers"><span data-id="' + [i] + '" class="user-number"></span> Followers</p>' +
-										'<button class="btn btn-primary user-follow">+ Follow</button>' +
+										'<div data-div="' + data.users[i].id + '"></div>' +
 									'</div>' +
 									'<div class="clearfix"></div>' +
 								'</div>' +
@@ -171,6 +176,25 @@ $(document).ready(function() {
 						$('.user-followers').find('[data-id="' + j + '"]').append(data.count[j]);
 					}
 				});
+			}
+		});
+	}
+	
+	function followsUsers(auth, id) {
+		
+		if(auth.id === id) return;
+		
+		var data = {
+			page: "single",
+			follower_id: auth.id,
+			userId: id
+		}
+		
+		$.get('FollowServlet', data, function(data) {
+			if(data.follow) {
+				$('[data-div="' + id + '"]').append('<button class="btn btn-default user-follow">Following</button>');
+			} else {
+				$('[data-div="' + id + '"]').append('<button class="btn btn-primary user-follow">+ Follow</button>');
 			}
 		});
 	}
@@ -187,7 +211,7 @@ $(document).ready(function() {
 		}
 		
 		$.get('FollowServlet', data, function(data) {
-			console.log(data);
+			
 			if(data.follow)
 				$('.profile-action').prepend('<button class="btn btn-default follow-btn" id="follow">Following</button>');
 			else
@@ -198,6 +222,22 @@ $(document).ready(function() {
 	$('.profile-action').delegate('#follow', 'click', function (e) {
 		e.preventDefault();
 		
+		var follow = $('#follow');
+		
+		followUser(eventAuth.id, id, follow);
+	});
+	
+	$('.follows').delegate('.user-follow', 'click', function(e) {
+		e.preventDefault();
+		
+		var id = $(this).parent().data('div');
+		var follow = $(this);
+		
+		followUser(eventAuth.id, id, follow);
+	});
+	
+	function followUser(followerId, userId, follow) {
+		
 		if (eventAuth == null) {
 			if (confirm("You must be logged in to follow a user. \nDo you want to log in now?"))
 				window.location.replace('login.html');
@@ -205,10 +245,7 @@ $(document).ready(function() {
 				return;
 		}
 		
-		if (eventAuth.id == id)
-			return;
-		
-		var follow = $('#follow');
+		if (eventAuth.id === id) return;
 		
 		if (follow.hasClass('btn-primary')) {
 			follow.removeClass('btn-primary');
@@ -221,12 +258,12 @@ $(document).ready(function() {
 		}
 		
 		var data = {
-			follower_id: eventAuth.id,
-			user_id: id
-		}
-		
-		$.post('FollowServlet', data);
-	});
+				follower_id: eventAuth.id,
+				user_id: userId
+			}
+			
+			$.post('FollowServlet', data);
+	}
 	
 	$(".profile-action").delegate('#block-user-btn', 'click', function(e) {
 		e.preventDefault();
