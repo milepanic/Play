@@ -82,7 +82,7 @@ public class FollowServlet extends HttpServlet {
 		Map<String, Object> data = new HashMap<>();
 		String status = "success";
 		
-		if(auth == null) {
+		if(auth == null || auth.isBanned() || auth.isDeleted()) {
 			status = "failure";
 			
 			data.put("status", status);

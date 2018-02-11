@@ -8,11 +8,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import play.dao.VideoDAO;
 import play.dao.VoteDAO;
+import play.model.User;
 import play.model.Video;
 import play.model.Vote;
 
@@ -67,6 +69,26 @@ public class VoteServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		User auth = (User) session.getAttribute("auth");
+		
+		Map<String, Object> data = new HashMap<>();
+		String status = "success";
+		
+		if(auth == null || auth.isBanned() || auth.isDeleted()) {
+			status = "failure";
+			
+			data.put("status", status);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonData = mapper.writeValueAsString(data);
+			System.out.println(jsonData);
+
+			response.setContentType("application/json");
+			response.getWriter().write(jsonData);
+			return;
+		}
+		
 		int userId = Integer.parseInt(request.getParameter("userId"));
 		int voteableId = Integer.parseInt(request.getParameter("voteableId"));
 		String voteableType = request.getParameter("voteableType");

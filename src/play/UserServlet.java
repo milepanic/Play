@@ -49,6 +49,21 @@ public class UserServlet extends HttpServlet {
 			return;
 		}
 		
+		if(user.isDeleted() && auth == null 
+				|| user.isDeleted() && auth != null && auth.getRole() != Role.ADMIN) {
+			message = "deleted-user";
+			
+			data.put("message", message);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonData = mapper.writeValueAsString(data);
+			System.out.println(jsonData);
+
+			response.setContentType("application/json");
+			response.getWriter().write(jsonData);
+			return;
+		}
+		
 		int followersCount = FollowDAO.count(user.getId());
 		int viewsCount = VideoDAO.countViews(id);
 		int videosCount = VideoDAO.countVideos(id);
@@ -80,7 +95,7 @@ public class UserServlet extends HttpServlet {
 		String username = request.getParameter("username");
 		User user = UserDAO.get(username);
 		
-		if(auth == null || auth.getId() != user.getId() && auth.getRole() != Role.ADMIN) {
+		if(auth == null || auth.getId() != user.getId() && auth.getRole() != Role.ADMIN || auth.isBanned() || auth.isDeleted()) {
 			status = "failure";
 			
 			data.put("status", status);

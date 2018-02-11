@@ -16,13 +16,13 @@ public class Video {
 	private boolean voteable;
 	private boolean blocked;
 	private int views;
-	private Date createdAt;
+	private String createdAt;
 	private User user;
 	private boolean deleted;
 
 	public Video(int id, String name, String url, String thumbnail, String description, 
 			Visibility visibility, boolean commentable,	 boolean voteable, 
-			boolean blocked, int views, Date createdAt, User user) {
+			boolean blocked, int views, String createdAt, User user) {
 		this.id = id;
 		this.name = name;
 		this.url = url;
@@ -55,7 +55,7 @@ public class Video {
 		voteable = true;
 		blocked = false;
 		views = 0;
-		createdAt = new Date();
+		createdAt = "";
 		user = null;
 	}
 
@@ -139,11 +139,11 @@ public class Video {
 		this.views = views;
 	}
 
-	public Date getCreatedAt() {
+	public String getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Date createdAt) {
+	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
 	}
 

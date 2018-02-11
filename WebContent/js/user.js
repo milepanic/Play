@@ -15,6 +15,11 @@ $(document).ready(function() {
 				$('.profile-container').remove();
 				$('.message-div').append('<h2>This user is banned</h2>');
 			}
+			
+			if(data.message === "deleted-user") {
+				$('.profile-container').remove();
+				$('.message-div').append('<h2>This user is deleted</h2>');
+			}
 
 			if(data.auth !== null) {
 				if(data.auth.id == id) {
@@ -31,6 +36,8 @@ $(document).ready(function() {
 							$('.profile-action').append('<button id="block-user-btn" data-blocked="true"' +
 							'class="btn btn-danger follow-btn">Ban</button>');
 						}
+						$('.profile-action').append('<a href="#" class="btn btn-danger follow-btn"' +
+						' id="delete-user-btn"><i class="fa fa-trash"></i></a>');
 						$('.profile-action').append('<button class="btn btn-success follow-btn"' +
 								' id="change-role-btn" data-role="' + data.user.role + '">Change role</button>');
 						$('.profile-action').append('<a class="btn btn-default follow-btn"' +
@@ -268,6 +275,11 @@ $(document).ready(function() {
 	$(".profile-action").delegate('#block-user-btn', 'click', function(e) {
 		e.preventDefault();
 		
+		if($(this).hasClass('btn-danger'))
+			if(!confirm('Do you want to ban this user?')) return;
+		if($(this).hasClass('btn-warning'))
+			if(!confirm('Do you want to unban this user?')) return;
+		
 		var blocked = $(this).data('blocked');
 		
 		var data = {
@@ -284,12 +296,29 @@ $(document).ready(function() {
 	$(".profile-action").delegate('#change-role-btn', 'click', function(e) {
 		e.preventDefault();
 		
+		if(!confirm('Do you want to change role of this user?')) return; 
+		
 		var role = $(this).data('role');
 		
 		var data = {
 			action: "role",
 			id: id,
 			role: role
+		}
+		
+		$.post('AdminServlet', data, function(data) {
+			location.reload();
+		});
+	});
+	
+	$(".profile-action").delegate('#delete-user-btn', 'click', function(e) {
+		e.preventDefault();
+		
+		if(!confirm('Do you want to delete this user?')) return; 
+		
+		var data = {
+			action: "delete",
+			id: id
 		}
 		
 		$.post('AdminServlet', data, function(data) {

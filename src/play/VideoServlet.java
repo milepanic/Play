@@ -1,6 +1,7 @@
 package play;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,9 @@ public class VideoServlet extends HttpServlet {
 				|| video.getUser().isBanned() && auth.getRole() == Role.USER && auth.getId() != video.getUser().getId()) { 
 				status = "fail";
 				message = "The user of this video is banned";
+			} else if(video.getUser().isDeleted() && auth == null || video.getUser().isDeleted() && auth.getRole() == Role.USER) {
+				status = "fail";
+				message = "The user of this video is deleted";
 			} else {
 				int views = video.getViews();
 				views++;
@@ -105,7 +109,7 @@ public class VideoServlet extends HttpServlet {
 		Map<String, Object> data = new HashMap<>();
 		String status = "success";
 		
-		if(auth == null) {
+		if(auth == null || auth.isBanned() || auth.isDeleted()) {
 			status = "failure";
 			
 			data.put("status", status);
@@ -171,10 +175,14 @@ public class VideoServlet extends HttpServlet {
 			boolean blocked = false;
 			int views = 0;
 			
+			Date dt = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String currentTime = sdf.format(dt);
+			
 			User user = UserDAO.get(userId);
 			
 			Video video = new Video(videoId, name, url, thumbnail, description, 
-					visibility, commentable, voteable, blocked, views, new Date(), user);
+					visibility, commentable, voteable, blocked, views, currentTime, user);
 			
 			VideoDAO.create(video);
 			

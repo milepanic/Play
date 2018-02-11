@@ -20,12 +20,13 @@ public class CommentDAO {
 
 		PreparedStatement pstmt = null;
 		try {
-			String query = "INSERT INTO comments (text, user_id, video_id) "
-					+ "VALUES (?, ?, ?)";
+			String query = "INSERT INTO comments (text, created_at, user_id, video_id) "
+					+ "VALUES (?, ?, ?, ?)";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
 			pstmt.setString(index++, comment.getText());
+			pstmt.setString(index++, comment.getCreatedAt());
 			pstmt.setInt(index++, comment.getUser().getId());
 			pstmt.setInt(index++, comment.getVideoId());
 			System.out.println(pstmt);
@@ -64,7 +65,7 @@ public class CommentDAO {
 				index = 1;
 				int commentId = rset.getInt(index++);
 				String text = rset.getString(index++);
-				Date createdAt = rset.getDate(index++);
+				String createdAt = rset.getString(index++);
 				int userId = rset.getInt(index++);
 				int videoId = rset.getInt(index++);
 				

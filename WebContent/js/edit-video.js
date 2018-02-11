@@ -88,6 +88,8 @@ $(document).ready(function() {
 	$('#delete').on('click', function(e) {
 		e.preventDefault();
 		
+		if(!confirm('Are you sure you want to delete this video?')) return;
+		
 		var data = {
 			id: id,
 			role: eventAuth.role,
@@ -101,6 +103,8 @@ $(document).ready(function() {
 	
 	$('#block').on('click', function(e) {
 		e.preventDefault();
+		
+		if(!confirm('Are you sure you want to block this video?')) return;
 		
 		var blocked = $(this).data('blocked');
 		

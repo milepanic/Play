@@ -25,6 +25,11 @@ public class SessionServlet extends HttpServlet {
 		
 		if (auth == null) 
 			data.put("status", "unauthenticated");
+		else if(auth.isDeleted()) {
+			data.put("status", "deleted");
+			session.invalidate();
+			return;
+		}
 		else {
 			data.put("status", "logged in");
 			data.put("auth", auth);

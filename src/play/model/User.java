@@ -13,12 +13,13 @@ public class User {
 	private String lastName;
 	private String email;
 	private String description;
-	private Date registeredAt;
+	private String registeredAt;
 	private boolean banned;
 	private Role role;
+	private boolean deleted;
 	
 	public User(int id, String username, String password, String firstName, String lastName, 
-			String email, String description, Date registeredAt, boolean banned, Role role) {
+			String email, String description, String registeredAt, boolean banned, Role role, boolean deleted) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
@@ -29,6 +30,7 @@ public class User {
 		this.registeredAt = registeredAt;
 		this.banned = banned;
 		this.role = role;
+		this.deleted = deleted;
 	}
 	
 	public User() {
@@ -39,9 +41,10 @@ public class User {
 		lastName = "";
 		email = "";
 		description = "";
-		registeredAt = new Date();
+		registeredAt = "";
 		banned = false;
 		role = Role.USER;
+		deleted = false;
 	}
 
 	public int getId() {
@@ -100,11 +103,11 @@ public class User {
 		this.description = description;
 	}
 
-	public Date getRegisteredAt() {
+	public String getRegisteredAt() {
 		return registeredAt;
 	}
 
-	public void setRegisteredAt(Date registeredAt) {
+	public void setRegisteredAt(String registeredAt) {
 		this.registeredAt = registeredAt;
 	}
 
@@ -123,5 +126,13 @@ public class User {
 
 	public void setRole(Role role) {
 		this.role = role;
-	}	
+	}
+	
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
 }

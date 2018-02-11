@@ -62,6 +62,12 @@ $(document).ready(function() {
 				return;
 			}
 			
+			if(data.auth.banned || data.auth.deleted) {
+				$('.votes').remove();
+				$('.write-comment').attr('disabled', true);
+				$('.follow-edit').remove();
+			}
+			
 			$(document).attr('title', data.video.name + ' - Play');
 			
 			userId = data.video.user.id;
@@ -176,8 +182,7 @@ $(document).ready(function() {
 			success: function(data) {
 				
 				if(data.status === "failure") {
-					alert('You are not logged in');
-					window.location.replace('/Play');
+					alert('Failed');
 					return;
 				}
 				
@@ -529,13 +534,13 @@ $(document).ready(function() {
 				$('.right-sidebar-single').append(
 					'<div class="single-video-box">' +
 						'<div class="thumbnail">' +
-							'<a href="single.html">' +
+							'<a href="single.html?id=' + data.videos[i].id + '">' +
 								'<img class="single-video-img" src="' + data.videos[i].thumbnail + '">' +
 							'</a>' +
 						'</div>' +
 						'<div class="single-info-box">' +
-							'<a href="#" class="video-name">' + data.videos[i].name + '</a><br>' +
-							'<a href="#" class="channel-name">' + data.videos[i].user.username + '</a><br>' +
+							'<a href="single.html?id=' + data.videos[i].id + '" class="video-name">' + data.videos[i].name + '</a><br>' +
+							'<a href="profile.html?id=' + data.videos[i].user.id + '" class="channel-name">' + data.videos[i].user.username + '</a><br>' +
 							'<span class="views"><i class="fa fa-eye"></i> 150 000 Views </span> ' +
 							'<span class="date"><i class="fa fa-clock-o"></i> ' + data.videos[i].createdAt + '</span>' +
 						'</div>' +

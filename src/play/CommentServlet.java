@@ -1,6 +1,7 @@
 package play;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -61,33 +62,27 @@ public class CommentServlet extends HttpServlet {
 		Map<String, Object> data = new HashMap<>();
 		String status = "success";
 		
-		if(auth == null) {
+		if(auth == null || auth.isBanned() || auth.isDeleted()) {
 			status = "failure";
+		} else {
+			String text = request.getParameter("text");
+			int userId = Integer.parseInt(request.getParameter("user_id"));
+			int videoId = Integer.parseInt(request.getParameter("video_id"));
 			
-			data.put("status", status);
+			Date dt = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String currentTime = sdf.format(dt);
 			
-			ObjectMapper mapper = new ObjectMapper();
-			String jsonData = mapper.writeValueAsString(data);
-			System.out.println(jsonData);
-
-			response.setContentType("application/json");
-			response.getWriter().write(jsonData);
+			int commentId = CommentDAO.last() + 1;
+			System.out.println(commentId);
+			
+			User user = UserDAO.get(userId);
+			Comment comment = new Comment(commentId, text, currentTime, user, videoId);
+			
+			CommentDAO.add(comment);
+			data.put("comment", comment);
 		}
 		
-		String text = request.getParameter("text");
-		int userId = Integer.parseInt(request.getParameter("user_id"));
-		int videoId = Integer.parseInt(request.getParameter("video_id"));
-		
-		int commentId = CommentDAO.last() + 1;
-		System.out.println(commentId);
-		
-		User user = UserDAO.get(userId);
-		
-		Comment comment = new Comment(commentId, text, new Date(), user, videoId);
-		
-		CommentDAO.add(comment);
-		
-		data.put("comment", comment);
 		data.put("status", status);
 		
 		ObjectMapper mapper = new ObjectMapper();

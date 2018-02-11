@@ -22,8 +22,8 @@ public class VideoDAO {
 		PreparedStatement pstmt = null;
 		try {
 			String query = "INSERT INTO videos (name, url, thumbnail, description, "
-					+ "visibility, commentable, voteable, user_id) VALUES "
-					+ "(?, ?, ?, ?, ?, ?, ?, ?)";
+					+ "visibility, commentable, voteable, created_at, user_id) VALUES "
+					+ "(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
 			pstmt.setString(index++, video.getName());
@@ -33,6 +33,7 @@ public class VideoDAO {
 			pstmt.setString(index++, video.getVisibility().toString());
 			pstmt.setBoolean(index++, video.isCommentable());
 			pstmt.setBoolean(index++, video.isVoteable());
+			pstmt.setString(index++, video.getCreatedAt());
 			pstmt.setInt(index++, video.getUser().getId());
 			System.out.println(pstmt);
 			
@@ -57,7 +58,7 @@ public class VideoDAO {
 		try {
 			String query = "SELECT id, name, url, thumbnail, views, created_at, user_id "
 					+ "FROM videos WHERE visibility = 'PUBLIC' AND blocked = false AND deleted = false "
-					+ "AND user_id NOT IN (SELECT id FROM users WHERE banned = true) "
+					+ "AND user_id NOT IN (SELECT id FROM users WHERE banned = true OR deleted = true) "
 					+ "ORDER BY created_at DESC";
 
 			pstmt = conn.prepareStatement(query);
@@ -72,7 +73,7 @@ public class VideoDAO {
 				String url = rset.getString(index++);
 				String thumbnail = rset.getString(index++);
 				int views = rset.getInt(index++);
-				Date createdAt = rset.getDate(index++);
+				String createdAt = rset.getString(index++);
 				int user_id = rset.getInt(index++);
 				
 				User user = UserDAO.get(user_id);
@@ -129,7 +130,7 @@ public class VideoDAO {
 				boolean voteable = rset.getBoolean(index++);
 				boolean blocked = rset.getBoolean(index++);
 				int views = rset.getInt(index++);
-				Date createdAt = rset.getDate(index++);
+				String createdAt = rset.getString(index++);
 				int userId = rset.getInt(index++);
 				
 				User user = UserDAO.get(userId);
@@ -187,7 +188,7 @@ public class VideoDAO {
 				boolean voteable = rset.getBoolean(index++);
 				boolean blocked = rset.getBoolean(index++);
 				int views = rset.getInt(index++);
-				Date createdAt = rset.getDate(index++);
+				String createdAt = rset.getString(index++);
 				int userId = rset.getInt(index++);
 				
 				User user = UserDAO.get(userId);
@@ -235,7 +236,7 @@ public class VideoDAO {
 				boolean voteable = rset.getBoolean(index++);
 				boolean blocked = rset.getBoolean(index++);
 				int views = rset.getInt(index++);
-				Date createdAt = rset.getDate(index++);
+				String createdAt = rset.getString(index++);
 				int userId = rset.getInt(index++);
 				
 				User user = UserDAO.get(userId);
@@ -285,7 +286,7 @@ public class VideoDAO {
 				boolean voteable = rset.getBoolean(index++);
 				boolean blocked = rset.getBoolean(index++);
 				int views = rset.getInt(index++);
-				Date createdAt = rset.getDate(index++);
+				String createdAt = rset.getString(index++);
 				int userId = rset.getInt(index++);
 				
 				User user = UserDAO.get(userId);

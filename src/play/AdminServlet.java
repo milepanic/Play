@@ -67,6 +67,8 @@ public class AdminServlet extends HttpServlet {
 			
 			user.setRole(role);
 			UserDAO.update(user);
+		} else if(action.contentEquals("delete")) {
+			UserDAO.delete(id);
 		}
 	}
 

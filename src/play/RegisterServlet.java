@@ -1,6 +1,8 @@
 package play;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +38,10 @@ public class RegisterServlet extends HttpServlet {
 		String email = request.getParameter("email");		
 		String description = request.getParameter("description");
 		
+		Date dt = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String currentTime = sdf.format(dt);
+		
 		String message = "Successfully logged in";
 		String status = "success";
 		
@@ -55,6 +61,7 @@ public class RegisterServlet extends HttpServlet {
 			user.setLastName(lastName);
 			user.setEmail(email);
 			user.setDescription(description);
+			user.setRegisteredAt(currentTime);
 			
 			System.out.println("New User: " + user.getUsername());
 			

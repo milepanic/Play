@@ -1,16 +1,14 @@
 package play.model;
 
-import java.util.Date;
-
 public class Comment {
 
 	private int id;
 	private String text;
-	private Date createdAt;
+	private String createdAt;
 	private User user;
 	private int videoId;
 	
-	public Comment(int id, String text, Date createdAt, User user, int videoId) {
+	public Comment(int id, String text, String createdAt, User user, int videoId) {
 		this.id = id;
 		this.text = text;
 		this.createdAt = createdAt;
@@ -30,10 +28,10 @@ public class Comment {
 	public void setText(String text) {
 		this.text = text;
 	}
-	public Date getCreatedAt() {
+	public String getCreatedAt() {
 		return createdAt;
 	}
-	public void setCreatedAt(Date createdAt) {
+	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
 	}
 	public User getUser() {

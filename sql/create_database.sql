@@ -10,9 +10,10 @@ CREATE TABLE users (
 	lastname VARCHAR(120),
 	email VARCHAR(120) NOT NULL,
 	description VARCHAR(1000),
-	registered_at TIMESTAMP,
+	registered_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	banned BOOLEAN DEFAULT false,
 	role ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER',
+	deleted BOOLEAN DEFAULT false,
 	PRIMARY KEY(id)
 );
 
@@ -33,7 +34,7 @@ CREATE TABLE videos (
 	voteable BOOLEAN DEFAULT true,
 	blocked BOOLEAN DEFAULT false,
 	views INT NOT NULL DEFAULT 0,
-	created_at TIMESTAMP,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	user_id INT NOT NULL,
 	deleted BOOLEAN DEFAULT FALSE,
 	PRIMARY KEY (id),
@@ -58,7 +59,7 @@ Written and produced by Carl Cox, Davide Carbone and Josh Abrahams ', 'PUBLIC', 
 CREATE TABLE comments (
 	id INT AUTO_INCREMENT,
 	text TEXT NOT NULL,
-	created_at TIMESTAMP,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	user_id INT NOT NULL,
 	video_id INT NOT NULL,
 	PRIMARY KEY (id),
@@ -82,7 +83,7 @@ CREATE TABLE votes (
 	voteable_id INT,
 	voteable_type VARCHAR(30) NOT NULL,
 	vote BOOLEAN NOT NULL,
-	created_at TIMESTAMP,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (id),
 	FOREIGN KEY (user_id) REFERENCES users(id)
 );

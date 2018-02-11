@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import play.model.User;
@@ -18,8 +17,9 @@ public class UserDAO {
 
 		PreparedStatement pstmt = null;
 		try {
-			String query = "INSERT INTO users (username, password, firstname, lastname, email, description, role) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
+			String query = "INSERT INTO users (username, password, firstname, "
+					+ "lastname, email, description, registered_at, role) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
@@ -28,7 +28,8 @@ public class UserDAO {
 			pstmt.setString(index++, user.getFirstName());
 			pstmt.setString(index++, user.getLastName());
 			pstmt.setString(index++, user.getEmail());
-			pstmt.setString(index++, user.getPassword());
+			pstmt.setString(index++, user.getDescription());
+			pstmt.setString(index++, user.getRegisteredAt());
 			pstmt.setString(index++, user.getRole().toString());
 			System.out.println(pstmt);
 
@@ -115,12 +116,13 @@ public class UserDAO {
 				String lastName = rset.getString(index++);
 				String email = rset.getString(index++);
 				String description = rset.getString(index++);
-				Date registeredAt = rset.getDate(index++);
+				String registeredAt = rset.getString(index++);
 				boolean banned = rset.getBoolean(index++);
 				Role role = Role.valueOf(rset.getString(index++));
+				boolean deleted = rset.getBoolean(index++);
 				
 				return new User(id, username, password, firstName, lastName, email,
-						description, registeredAt, banned, role);
+						description, registeredAt, banned, role, deleted);
 			}
 		} catch (SQLException ex) {
 			System.out.println("Greska u SQL upitu!");
@@ -156,12 +158,13 @@ public class UserDAO {
 				String lastName = rset.getString(index++);
 				String email = rset.getString(index++);
 				String description = rset.getString(index++);
-				Date registeredAt = rset.getDate(index++);
+				String registeredAt = rset.getString(index++);
 				boolean banned = rset.getBoolean(index++);
 				Role role = Role.valueOf(rset.getString(index++));
+				boolean deleted = rset.getBoolean(index++);
 				
 				return new User(id, username, password, firstName, lastName, email,
-						description, registeredAt, banned, role);
+						description, registeredAt, banned, role, deleted);
 			}
 		} catch (SQLException ex) {
 			System.out.println("Greska u SQL upitu!");
@@ -230,6 +233,30 @@ public class UserDAO {
 			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
 		}
 
+		return false;
+	}
+	
+	public static boolean delete(int id) {
+		Connection conn = ConnectionManager.getConnection();
+
+		PreparedStatement pstmt = null;
+		try {
+			String query = "UPDATE users SET deleted = true WHERE id = ?";
+
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			
+			pstmt.setInt(index++, id);
+			System.out.println(pstmt);
+
+			return pstmt.executeUpdate() == 1;
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+		
 		return false;
 	}
 }

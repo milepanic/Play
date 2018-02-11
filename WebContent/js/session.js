@@ -30,6 +30,7 @@ function setData(data) {
 		);
 		
 		$("#upload-list").append('<a href="upload.html"><i class="fa fa-upload" aria-hidden="true"></i> Upload</a>');
+		$("#following-list").append('<a href="following.html"><i class="fa fa-plus" aria-hidden="true"></i> You Follow</a>');
 		
 		data.auth.role == 'ADMIN' ?
 			$('.auth-info').find('.dropdown-menu').append(

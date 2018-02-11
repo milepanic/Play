@@ -40,7 +40,7 @@ $(document).ready(function () {
 			                		'data-target="#myModal" data-name="' + row.username + '" data-id="' + row.id + '">' +
 			                		'<i class="fa fa-ban" aria-hidden="true"></i>' +
 			                	'</a>&nbsp;' +
-			                	'<a class="text-muted" title="Delete" href="#">' +
+			                	'<a class="text-muted delete" title="Delete" href="#">' +
 			                		'<i class="fa fa-trash" aria-hidden="true"></i>' +
 			                	'</a>&nbsp;' +
 			                	'<a class="text-warning role" data-role="' + row.role + '" title="Change role" href="#">' +
@@ -110,6 +110,22 @@ $(document).ready(function () {
 				action: "role",
 				id: id,
 				role: role
+			}
+			
+			$.post('../AdminServlet', data, function() {
+				location.reload();
+			});
+		}
+	});
+	
+	$('#dataTable').delegate('.delete', 'click', function() {
+		id = $(this).parent().find('.ban').data('id');
+		name = $(this).parent().find('.ban').data('name');
+		
+		if(confirm('Do you want to delete ' + name)) {
+			var data = {
+				action: "delete",
+				id: id,
 			}
 			
 			$.post('../AdminServlet', data, function() {
