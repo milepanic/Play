@@ -91,11 +91,10 @@
                     
                     	<h3 class="upload-h3">Add Video</h3>
                     
-                        <form id="upload-form">
+                        <form id="upload-form" method="POST">
 							<div class="form-group">
 						    	<label for="url">Video URL</label>
 						    	<input type="text" name="url" class="form-control" id="url" placeholder="Enter URL" required>
-						    	<small id="emailHelp" class="form-text text-muted">*Youtube only</small>
 						  	</div>
 						  	<div class="form-group">
 						    	<label for="name">Name</label>
@@ -147,6 +146,10 @@
 
 	<!-- JQuery -->
 	<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+	<!-- JQuery Validate -->
+	<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+	<!-- JQuery Validate additional methods -->
+	<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/additional-methods.min.js"></script>
 	<!-- Bootstrap JS -->
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
     <!-- Upload JS -->

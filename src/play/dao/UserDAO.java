@@ -205,24 +205,82 @@ public class UserDAO {
 		return 0;
 	}
 	
+	public static boolean validateUsername(String username) {
+		Connection conn = ConnectionManager.getConnection();
+
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			String query = "SELECT * FROM users WHERE username = ?";
+
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			pstmt.setString(index++, username);
+			System.out.println(pstmt);
+
+			rset = pstmt.executeQuery();
+			if (rset.next()) {
+				return true;
+			}
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+			try {rset.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+
+		return false;
+	}
+	
+	public static boolean validateEmail(String email) {
+		Connection conn = ConnectionManager.getConnection();
+
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			String query = "SELECT * FROM users WHERE email = ?";
+
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			pstmt.setString(index++, email);
+			System.out.println(pstmt);
+
+			rset = pstmt.executeQuery();
+			if (rset.next()) {
+				return true;
+			}
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+			try {rset.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+
+		return false;
+	}
+	
 	public static boolean update(User user) {
 		Connection conn = ConnectionManager.getConnection();
 
 		PreparedStatement pstmt = null;
 		try {
-			String query = "UPDATE users SET firstname = ?, lastname = ?, "
-					+ "email = ?, description = ?, banned = ?, role = ? WHERE username = ?";
+			String query = "UPDATE users SET username = ?, password = ?, firstname = ?, lastname = ?, "
+					+ "email = ?, description = ?, banned = ?, role = ? WHERE id = ?";
 
 			pstmt = conn.prepareStatement(query);
 			int index = 1;
 			
+			pstmt.setString(index++, user.getUsername());
+			pstmt.setString(index++, user.getPassword());
 			pstmt.setString(index++, user.getFirstName());
 			pstmt.setString(index++, user.getLastName());
 			pstmt.setString(index++, user.getEmail());
 			pstmt.setString(index++, user.getDescription());
 			pstmt.setBoolean(index++, user.isBanned());
 			pstmt.setString(index++, user.getRole().toString());
-			pstmt.setString(index++, user.getUsername());
+			pstmt.setInt(index++, user.getId());
 			System.out.println(pstmt);
 
 			return pstmt.executeUpdate() == 1;

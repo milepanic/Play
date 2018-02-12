@@ -62,7 +62,7 @@ $(document).ready(function() {
 				return;
 			}
 			
-			if(data.auth.banned || data.auth.deleted) {
+			if(data.auth !== null && data.auth.banned || data.auth !== null && data.auth.deleted) {
 				$('.votes').remove();
 				$('.write-comment').attr('disabled', true);
 				$('.follow-edit').remove();
@@ -500,6 +500,8 @@ $(document).ready(function() {
 	
 	// provjerava da li je korisnik glasao za komentare
 	function commentVoted(auth, id) {
+		
+		if(typeof auth === 'undefined') return;
 		
 		var data = {
 			action: "check-vote",

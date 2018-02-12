@@ -10,7 +10,37 @@ $(document).ready(function() {
 	
 	$("head").append('<script type="text/javascript" src="js/session.js"></script>');
 	
+	$.validator.setDefaults({
+		errorClass: 'text-danger',
+		highlight: function(element) {
+			$(element).closest('.form-group').addClass('has-error');
+		},
+		unhighlight: function(element) {
+			$(element).closest('.form-group').removeClass('has-error');
+		}
+	});
+	
+	$('#upload-form').validate({
+		rules: {
+			url: {
+				required: true,
+				url2: true
+			},
+			name: "required"
+		},
+		messages: {
+			url: {
+				required: 'Please enter Youtube URL'
+			},
+			name: {
+				required: 'Name can\'t be empty',
+			}
+		}
+	});
+	
 	$("#submit").click(function(e) {
+		if(!$('#upload-form').valid()) return;
+		
 		e.preventDefault();
 		
 		var comm = false;

@@ -3,16 +3,12 @@ package play;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import play.dao.UserDAO;
 import play.model.User;
@@ -42,44 +38,27 @@ public class RegisterServlet extends HttpServlet {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String currentTime = sdf.format(dt);
 		
-		String message = "Successfully logged in";
-		String status = "success";
-		
-		if(UserDAO.get(username) != null) {
-			message = "That username is already taken";
-			status = "username-fail";
-		} else if(email.isEmpty()) {
-			message = "Email can't be empty";
-			status = "email-fail";
-		} else {
-			User user = new User();
-			
-			user.setId(UserDAO.last() + 1);
-			user.setUsername(username);
-			user.setPassword(password);
-			user.setFirstName(firstName);
-			user.setLastName(lastName);
-			user.setEmail(email);
-			user.setDescription(description);
-			user.setRegisteredAt(currentTime);
-			
-			System.out.println("New User: " + user.getUsername());
-			
-			UserDAO.create(user);
-			
-			session.setAttribute("auth", user);
+		if(UserDAO.validateEmail(email) || UserDAO.validateUsername(username)) {
+			System.out.println("Failure");
+			response.sendRedirect("register.html");
+			return;
 		}
 		
-		Map<String, Object> data = new HashMap<>();
-		data.put("message", message);
-		data.put("status", status);
+		User user = new User();
+		
+		user.setId(UserDAO.last() + 1);
+		user.setUsername(username);
+		user.setPassword(password);
+		user.setFirstName(firstName);
+		user.setLastName(lastName);
+		user.setEmail(email);
+		user.setDescription(description);
+		user.setRegisteredAt(currentTime);
+		
+		UserDAO.create(user);
+		session.setAttribute("auth", user);
 
-		ObjectMapper mapper = new ObjectMapper();
-		String jsonData = mapper.writeValueAsString(data);
-		System.out.println(jsonData);
-
-		response.setContentType("application/json");
-		response.getWriter().write(jsonData);
+		response.sendRedirect("index.html");
 	}
 
 }

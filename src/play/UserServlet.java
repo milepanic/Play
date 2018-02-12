@@ -92,8 +92,8 @@ public class UserServlet extends HttpServlet {
 		Map<String, Object> data = new HashMap<>();
 		String status = "success";
 		
-		String username = request.getParameter("username");
-		User user = UserDAO.get(username);
+		int id = Integer.parseInt(request.getParameter("id"));
+		User user = UserDAO.get(id);
 		
 		if(auth == null || auth.getId() != user.getId() && auth.getRole() != Role.ADMIN || auth.isBanned() || auth.isDeleted()) {
 			status = "failure";
@@ -109,11 +109,15 @@ public class UserServlet extends HttpServlet {
 			return;
 		}
 		
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
 		String firstName = request.getParameter("firstname");
 		String lastName = request.getParameter("lastname");
 		String email = request.getParameter("email");
 		String description = request.getParameter("description");
 		
+		user.setUsername(username);
+		user.setPassword(password);
 		user.setFirstName(firstName);
 		user.setLastName(lastName);
 		user.setEmail(email);

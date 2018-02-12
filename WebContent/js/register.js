@@ -1,40 +1,43 @@
 $(document).ready(function () {
 	
-	$("#btn-register").click(function (e) {
-		e.preventDefault();
-		
-		var username = $("#username").val();
-		var password = $("#password").val();
-		var firstName = $("#firstname").val();
-		var lastName = $("#lastname").val();
-		var email = $("#email").val();
-		var description = $("#description").val();
-		
-		var data = {
-			'username': username,
-			'password': password,
-			'firstname': firstName,
-			'lastname': lastName,
-			'email': email,
-			'descrtiption': description
+	$.validator.setDefaults({
+		errorClass: 'text-danger',
+		highlight: function(element) {
+			$(element).closest('.form-group').addClass('has-error');
+		},
+		unhighlight: function(element) {
+			$(element).closest('.form-group').removeClass('has-error');
 		}
-		
-		$.post('RegisterServlet', data, function(data) {
-			console.log(data);
-			if(data.status === "username-fail") {
-				$("#username").css('border-color', 'red');
-				$("#username-message").append(data.message);
-				return;
+	});
+	
+	$.validator.addMethod('usernameLength', function(value, element) {
+		return value.length <= 10;
+	}, 'Username can\'t be longer than 10 characters');
+	
+	$('#register-form').validate({
+		rules: {
+			username: {
+				required: true,
+				usernameLength: true,
+				remote: 'ValidationServlet',
+			},
+			password: "required",
+			email: {
+				required: true,
+				email: true,
+				remote: 'ValidationServlet',
 			}
-			
-			if(data.status === "email-fail") {
-				$("#email").css('border-color', 'red');
-				$("#email-message").append(data.message);
-				return;
+		},
+		messages: {
+			username: {
+				remote: $.validator.format('{0} is already taken')
+			},
+			email: {
+				required: 'Please enter email adress',
+				email: 'Please enter valid email adress',
+				remote: $.validator.format('{0} already exists. <a href="login.html">Log in</a> if it is your email')
 			}
- 			
-			//window.location.replace('/Play');
-		});
+		}
 	});
 	
 });

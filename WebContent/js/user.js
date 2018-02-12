@@ -131,11 +131,48 @@ $(document).ready(function() {
 				$('#email').val(data.user.email);
 				$('#description').val(data.user.description);
 				
-				$("#submit").on('click', function (e) {
+				$.validator.setDefaults({
+					errorClass: 'text-danger',
+					highlight: function(element) {
+						$(element).closest('.form-group').addClass('has-error');
+					},
+					unhighlight: function(element) {
+						$(element).closest('.form-group').removeClass('has-error');
+					}
+				});
+				
+				$.validator.addMethod('usernameLength', function(value, element) {
+					return value.length <= 10;
+				}, 'Username can\'t be longer than 10 characters');
+				
+				$('#edit-user-form').validate({
+					rules: {
+						username: {
+							required: true,
+							usernameLength: true,
+						},
+						password: "required",
+						email: {
+							required: true,
+							email: true,
+						}
+					},
+					messages: {
+						email: {
+							required: 'Please enter email adress',
+							email: 'Please enter valid email adress'
+						}
+					}
+				});
+				
+				$('#edit-btn').on('click', function (e) {
+					if(!$('#edit-user-form').valid()) return;
 					e.preventDefault();
 					
 					var data = {
+						id: id,
 						username: $('#username').val(),
+						password: $('#password').val(),
 						firstname: $('#firstname').val(),
 						lastname: $('#lastname').val(),
 						email: $('#email').val(),

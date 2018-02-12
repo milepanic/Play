@@ -137,4 +137,14 @@
     <servlet-name>ImageServlet</servlet-name>
     <url-pattern>/ImageServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ValidationServlet</display-name>
+    <servlet-name>ValidationServlet</servlet-name>
+    <servlet-class>play.ValidationServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ValidationServlet</servlet-name>
+    <url-pattern>/ValidationServlet</url-pattern>
+  </servlet-mapping>
 </web-app>
