@@ -42,7 +42,7 @@ public class FollowServlet extends HttpServlet {
 			response.getWriter().write(jsonData);
 		} else if (page.contentEquals("follows")) {
 			List<User> users = FollowDAO.getUsers(userId);
-			List count = new ArrayList();
+			List<Integer> count = new ArrayList<>();
 			
 			for(User user : users) {
 				count.add(FollowDAO.count(user.getId()));

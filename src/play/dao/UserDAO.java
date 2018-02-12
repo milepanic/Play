@@ -177,6 +177,47 @@ public class UserDAO {
 		return null;
 	}
 	
+	public static List<User> mostPopular() {
+		List<User> users = new ArrayList<>();
+
+		Connection conn = ConnectionManager.getConnection();
+
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			String query = "SELECT A.* FROM users A INNER JOIN "
+					+ "(SELECT user_id, COUNT(*) follow_count  FROM follow GROUP BY user_id) "
+					+ "B ON A.id=B.user_id "
+					+ "ORDER BY B.follow_count DESC LIMIT 5";
+
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			System.out.println(pstmt);
+
+			rset = pstmt.executeQuery();
+			while (rset.next()) {
+				index = 1;
+				int id = rset.getInt(index++);
+				String username = rset.getString(index++);;
+
+				User user = new User();
+				
+				user.setId(id);
+				user.setUsername(username);
+				
+				users.add(user);
+			}
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+			try {rset.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+		
+		return users;
+	}
+	
 	public static int last() {
 		Connection conn = ConnectionManager.getConnection();
 	

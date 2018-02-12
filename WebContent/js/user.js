@@ -196,7 +196,7 @@ $(document).ready(function() {
 					console.log(data);
 					for(i in data.users) {
 						
-						followsUsers(auth, data.users[i].id);
+						if(auth !== null) followsUsers(auth, data.users[i].id);
 						
 						$('.follows').append(
 							'<div class="col-md-4">' +

@@ -117,7 +117,7 @@ $(document).ready(function() {
 		$.get('CommentServlet', data, function(data) {
 
 			$('#comment-number').append(data.count);
-			
+			console.log(data);
 			for(i in data.comments) {
 				
 				$('.comments').append(

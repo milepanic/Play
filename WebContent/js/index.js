@@ -7,9 +7,23 @@ $(document).ready(function() {
 	function getVideos() {
 
 		$.get('IndexServlet', function(data) {
+			console.log(data);
+			for(i in data.users) {
+				$('.most-popular').append(
+					'<div class="popular-user-box">' +
+						'<div class="popular-user-left">' +
+							'<a href="profile.html?id=' + data.users[i].id + '"><img class="profile-pic-medium"' +
+							'src="https://www.poeticous.com/system/poets/photos/000/026/357/large/jm-flower-crown.jpg?1481219945"></a>' +
+						'</div>' +
+						'<div class="popular-user-right col-md-7">' +
+							'<a class="popular-user-username" href="profile.html?id=' + data.users[i].id + '">' + data.users[i].username + '</a><br>' +
+							'<small class="popular-user-followers"><span data-div-id="' + i + '" class="popular-user-number"></span> Followers</small>' +
+						'</div>' +
+            		'</div>'
+				);
+			}
 			
 			for(i in data.videos) {
-				
 				$('.videos-box').append(
 					'<div class="video-box">' +
 						'<div class="thumbnail">' +
@@ -27,6 +41,10 @@ $(document).ready(function() {
 						'</div>' +
 					'</div>'
 				);
+			}
+			
+			for(i in data.count) {
+				$('[data-div-id="' + i + '"]').append(data.count[i]);
 			}
 		});
 	}

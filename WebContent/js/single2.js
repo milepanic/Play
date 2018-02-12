@@ -117,7 +117,7 @@ $(document).ready(function() {
 		
 		$.get('CommentServlet', data, function(data) {
 			$('#comment-number').empty().append(data.count);
-			
+			console.log(data);
 			for(i in data.comments) {
 				
 				getCommentVotes(data.comments[i].id);
@@ -155,6 +155,7 @@ $(document).ready(function() {
 	// parametri sortiranja komentara
 	$('.order-val').on('click', function() {
 		getComments(eventAuth);
+		console.log('clicked on .order-val')
 	});
 	
 	// komentarisanje
@@ -169,6 +170,9 @@ $(document).ready(function() {
 		}
 		
 		var text = $('.write-comment').val();
+		
+		if(text === "") return;
+		
 		var data = {
 			'text': text,
 			'user_id': eventAuth.id,
@@ -554,7 +558,7 @@ $(document).ready(function() {
 	}
 
 	getVideo();
-	getComments();
+	//getComments();
 	getVotes();
 	sidebar();
 });

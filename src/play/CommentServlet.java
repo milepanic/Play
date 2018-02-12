@@ -66,6 +66,9 @@ public class CommentServlet extends HttpServlet {
 			status = "failure";
 		} else {
 			String text = request.getParameter("text");
+			
+			if(text == "") return;
+			
 			int userId = Integer.parseInt(request.getParameter("user_id"));
 			int videoId = Integer.parseInt(request.getParameter("video_id"));
 			
