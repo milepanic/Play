@@ -2,7 +2,7 @@
 1. Header
 2. Sidebar
 3. Main Content (index.html)
-4. Most Popular (index.html)
+4. Search & Most Popular (index.html)
 5. Video Box (index.html)
 6. Video Box (single.html)
 7. Right Sidebar (single.html)
@@ -11,6 +11,7 @@
 10. Upload (upload.html)
 11. Register (register.html)
 12. About user (about.html)
+13. Search page (search.html)
 
 Last. Media Queries
 
@@ -226,7 +227,11 @@ nav {
     margin-right: -250px;
 }
 
-/* Most popular */
+/* Search & Most popular */
+#search-form i {
+	color: #000;
+}
+
 .most-popular {
 	width: 100%;
 	height: 200px;
@@ -684,10 +689,44 @@ nav {
 	color: #383838;
 }
 
+/* Search page */
+.s-videos-box {
+	background: #F8F8F8;
+}
 
+.s-video-box {
+	padding: 0;
+	display: flex;
+	margin-bottom: 20px;
+}
 
+.s-video-img {
+	width: 180px;
+	margin-right: 20px;
+}
 
+.s-info-box {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
 
+.s-video-name {
+	font-size: 24px;
+	color: #282828;
+}
+.s-video-name:hover, .s-channel-name:hover {
+	text-decoration: none;
+	color: #282828;
+}
+
+.s-channel-name, .s-views, .s-date, .s-likes-dislikes {
+	color: #6d6c6c;
+}
+
+.s-views, .s-date {
+	font-size: 13px;
+}
 
 
 

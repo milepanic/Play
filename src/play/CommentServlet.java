@@ -27,20 +27,32 @@ public class CommentServlet extends HttpServlet {
 		int videoId = Integer.parseInt(request.getParameter("id"));
 		String order = request.getParameter("order");
 		
-		String param = "";
-		String rank = "ASC";
-		System.out.println(order.toString());
-		switch(order.toString()) {
-			case "Latest":
-				param = "created_at";
-				rank = "DESC";
-				break;
-			case "Oldest":
-				param ="created_at";
-				break;
+		List<Comment> comments = null;
+		
+		if(order.contains("Likes")) {
+			comments = CommentDAO.popular(videoId, true);
+			System.out.println("most popular---");
+		} else if(order.contains("Dislikes")) {
+			comments = CommentDAO.popular(videoId, false);
+			System.out.println("least popular---");
+		} else {
+			System.out.println("else ---");
+			String param = "";
+			String rank = "ASC";
+			System.out.println(order.toString());
+			switch(order.toString()) {
+				case "Latest":
+					param = "created_at";
+					rank = "DESC";
+					break;
+				case "Oldest":
+					param ="created_at";
+					break;
+			}
+			
+			comments = CommentDAO.getAll(videoId, param, rank);
 		}
 		
-		List<Comment> comments = CommentDAO.getAll(videoId, param, rank);
 		int count = CommentDAO.count(videoId);
 		
 		Map<String, Object> data = new HashMap<>();

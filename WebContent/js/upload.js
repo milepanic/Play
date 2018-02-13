@@ -20,13 +20,20 @@ $(document).ready(function() {
 		}
 	});
 	
+	$.validator.addMethod('nameLength', function(value, element) {
+		return value.length <= 50;
+	}, 'Username can\'t be longer than 50 characters');
+	
 	$('#upload-form').validate({
 		rules: {
 			url: {
 				required: true,
 				url2: true
 			},
-			name: "required"
+			name: {
+				required: true,
+				nameLength: true
+			}
 		},
 		messages: {
 			url: {

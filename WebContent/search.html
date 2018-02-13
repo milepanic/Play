@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 	<meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-	<title>Profile Page - Play</title>
+	<title>Play</title>
 	<link rel="icon" href="img/logosm.png">
 
 	<!-- Font Awesome -->
@@ -13,9 +14,10 @@
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<!-- Custom CSS -->
 	<link rel="stylesheet" type="text/css" href="css/style.css">
+	
 </head>
 <body>
-	
+
 	<!-- Header -->
 	<nav class="navbar-fixed-top navbar-default">
 		<div class="container-fluid">
@@ -37,7 +39,7 @@
 				<form class="navbar-form navbar-left" action="search.html" method="GET">
 		            <div id="imaginary_container"> 
 		                <div class="input-group stylish-input-group">
-		                    <input type="text" class="form-control"  placeholder="Search" >
+		                    <input type="text" name="search" class="form-control" id="search" placeholder="Search" >
 		                    <span class="input-group-addon">
 		                        <button type="submit">
 		                            <i class="fa fa-search" aria-hidden="true"></i>
@@ -86,56 +88,11 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
             <div class="container-fluid">
-            
-             <div class="message-div"></div>
-            
                 <div class="row">
                     <div class="col-lg-12">
-                        
-                        <!-- Main Content -->
-                        <div class="profile-container">
-
-                        	<div class="profile-header">
-                        		<div class="profile-header-left">
-                        			<img class="profile-pic-large" src="http://akns-images.eonline.com/eol_images/Entire_Site/2012430/reg_1024.dirty.cm.53012.jpg">
-                        			<p class="profile-header-name"></p>
-                        		</div>
-                        		<div class="profile-header-right">
-                        			<p class="profile-description"></p>
-                        			<div class="profile-info"></div>
-                        		</div>
-                        	</div>
-
-                        	<div class="profile-action">
-                        		<ul class="nav nav-pills">
-									<li class="active"><a class="profile-videos" href="profile.html">Videos</a></li>
-									<li><a class="profile-about" href="about.html">About</a></li>
-									<li><a class="profile-follows" href="follows.html">Follows</a></li>
-								</ul>
-								
-                        	</div>
-                        	
-			                <div class="row">
-			                    <div class="col-lg-12">
-			                    	<div class="profile-orderby">
-		                        		<span>Order by</span> 
-		                        		<select id="comments-order">
-											<option class="order-val" value="latest">Latest</option>
-											<option class="order-val" value="oldest">Oldest</option>
-											<option class="order-val" value="best">Most popular</option>
-											<option class="order-val" value="worst">Least popular</option>
-										</select> 
-		                        	</div>
-		                        	<div class="clearfix"></div>
-			                        <hr>
-			                        
-									<div class="videos-box"></div>
-									
-								</div>
-			                </div>
-
-                        </div>
-
+                    
+                        <div class="s-videos-box"></div>
+						
                     </div>
                 </div>
             </div>
@@ -145,10 +102,10 @@
 
 
 	<!-- JQuery -->
-	<script src="js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
 	<!-- Bootstrap JS -->
-	<script src="js/bootstrap.min.js"></script>
-    
-    <script src="js/user.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <!-- Search JS -->
+    <script type="text/javascript" src="js/search.js"></script>
 </body>
 </html>

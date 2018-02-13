@@ -96,9 +96,12 @@ $(document).ready(function() {
 				$('.comments-hide').remove();
 			}
 			
-			follows(data.auth, userId);
-			voted(data.auth, videoId);
-			getComments(data.auth);
+			if(data.auth !== null) {
+				follows(data.auth, userId);
+				voted(data.auth, videoId);
+				getComments(data.auth);
+			} else getComments(null);
+			
 		});
 		
 		
@@ -107,7 +110,6 @@ $(document).ready(function() {
 	// uzima sve komentare za odredjeni video
 	function getComments(auth) {
 		$('.comments').empty();
-		
 		var order = $('#comments-order').find(":selected").text();
 		
 		var data = {
@@ -117,11 +119,12 @@ $(document).ready(function() {
 		
 		$.get('CommentServlet', data, function(data) {
 			$('#comment-number').empty().append(data.count);
-			console.log(data);
+			
 			for(i in data.comments) {
 				
 				getCommentVotes(data.comments[i].id);
-				commentVoted(auth, data.comments[i].id);
+				if(typeof auth != 'undefined')
+					commentVoted(auth, data.comments[i].id);
 				
 				$('.comments').append(
 					'<div class="comment">' +
@@ -154,8 +157,11 @@ $(document).ready(function() {
 	
 	// parametri sortiranja komentara
 	$('.order-val').on('click', function() {
-		getComments(eventAuth);
-		console.log('clicked on .order-val')
+		
+		if(eventAuth !== null)
+			getComments(eventAuth);
+		else getComments(null);
+		
 	});
 	
 	// komentarisanje
@@ -558,7 +564,6 @@ $(document).ready(function() {
 	}
 
 	getVideo();
-	//getComments();
 	getVotes();
 	sidebar();
 });

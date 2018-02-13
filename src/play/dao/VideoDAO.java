@@ -101,6 +101,77 @@ public class VideoDAO {
 		return videos;
 	}
 	
+	public static List<Video> search(String filter, boolean videoname, boolean username, boolean comment) {
+		List<Video> videos = new ArrayList<>();
+
+		Connection conn = ConnectionManager.getConnection();
+
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			filter = filter
+				    .replace("!", "!!")
+				    .replace("%", "!%")
+				    .replace("_", "!_")
+				    .replace("[", "![");
+			
+			String query = "SELECT id, name, url, thumbnail, views, created_at, user_id "
+					+ "FROM videos WHERE (visibility = 'PUBLIC' AND blocked = false AND deleted = false "
+					+ "AND user_id NOT IN (SELECT id FROM users WHERE banned = true OR deleted = true)) ";
+			
+			if(videoname || username || comment) query += "AND (";
+			
+			if(videoname) query += " name LIKE ?";
+			if(videoname && username || videoname && comment) query += " OR";
+			if(username) query += " user_id IN (SELECT id FROM users WHERE username LIKE ?)";
+			if(username && comment) query += " OR";
+			if(comment) query += " id IN (SELECT video_id FROM comments WHERE text LIKE ?)";
+			
+			if(videoname || username || comment) query += ")";
+
+			pstmt = conn.prepareStatement(query);
+			int index = 1;
+			if(videoname) pstmt.setString(index++, "%" + filter + "%");
+			if(username) pstmt.setString(index++, "%" + filter + "%");
+			if(comment) pstmt.setString(index++, "%" + filter + "%");
+			System.out.println(pstmt);
+
+			rset = pstmt.executeQuery();
+			while (rset.next()) {
+				index = 1;
+				int id = rset.getInt(index++);
+				String name = rset.getString(index++);
+				String url = rset.getString(index++);
+				String thumbnail = rset.getString(index++);
+				int views = rset.getInt(index++);
+				String createdAt = rset.getString(index++);
+				int user_id = rset.getInt(index++);
+				
+				User user = UserDAO.get(user_id);
+
+				Video video = new Video();
+				
+				video.setId(id);
+				video.SetName(name);
+				video.setUrl(url);
+				video.setThumbnail(thumbnail);
+				video.setViews(views);
+				video.setCreatedAt(createdAt);
+				video.setUser(user);
+				
+				videos.add(video);
+			}
+		} catch (SQLException ex) {
+			System.out.println("Greska u SQL upitu!");
+			ex.printStackTrace();
+		} finally {
+			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+			try {rset.close();} catch (SQLException ex1) {ex1.printStackTrace();}
+		}
+		
+		return videos;
+	}
+	
 	public static List<Video> getWhereUser(int id) {
 		List<Video> videos = new ArrayList<>();
 		Connection conn = ConnectionManager.getConnection();

@@ -4,7 +4,7 @@ USE play;
 
 CREATE TABLE users (
 	id INT AUTO_INCREMENT,
-	username VARCHAR(30) NOT NULL,
+	username VARCHAR(10) NOT NULL,
 	password VARCHAR(120) NOT NULL,
 	firstname VARCHAR(120),
 	lastname VARCHAR(120),
@@ -21,11 +21,12 @@ INSERT INTO users (username, password, email, role) VALUES
 		('admin', 'admin', 'admin@admin.com', 'ADMIN'),
 		('user', 'admin', 'user@user.com', 'USER'),
 		('user2', 'admin', 'user2@user.com', 'USER'),
-		('user3', 'admin', 'user3@user.com', 'USER');
+		('user3', 'admin', 'user3@user.com', 'USER'),
+		('user4', 'admin', 'user4@user.com', 'USER');
 	
 CREATE TABLE videos (
 	id INT AUTO_INCREMENT,
-	name VARCHAR(200) NOT NULL,
+	name VARCHAR(50) NOT NULL,
 	url VARCHAR(100) NOT NULL,
 	thumbnail VARCHAR(100) NOT NULL,
 	description VARCHAR(1000),
@@ -67,8 +68,21 @@ CREATE TABLE comments (
 	FOREIGN KEY (video_id) REFERENCES videos(id)
 );
 
-INSERT INTO comments (text, user_id, video_id)
-	VALUES ('Naci todor postavio ovaj komentar', 1, 1);
+INSERT INTO comments (text, user_id, video_id) VALUES
+	 ('Komentar PRVI', 1, 1),
+	 ('D R U G I ', 2, 1),
+	 ('KOOOOMEEENTARRR', 1, 1),
+	 ('ssss wwwww eeeee fffff', 3, 1),
+	 ('Ko je postavio ovaj komentar', 4, 1),
+	 ('Dobar video! ', 5, 1),
+	 ('AHOY', 1, 2),
+	 ('POZDRAV SVIMA', 3, 2),
+	 ('Have a nice day', 1, 2),
+	 ('Go Go Go! Roger That!', 2, 2),
+	 ('Very nice', 3, 3),
+	 ('Good job mate', 3, 2),
+	 ('Komentarrr', 3, 1),
+	 ('AHOY', 3, 2);
 	
 CREATE TABLE follow (
 	follower_id INT,
@@ -76,6 +90,18 @@ CREATE TABLE follow (
 	FOREIGN KEY (follower_id) REFERENCES users(id),
 	FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+INSERT INTO follow VALUES 
+	(1, 2),
+	(1, 3),
+	(1, 4),
+	(2, 1),
+	(3, 1),
+	(3, 2),
+	(4, 2),
+	(3, 4),
+	(1, 5),
+	(2, 5);
 	
 CREATE TABLE votes (
 	id INT AUTO_INCREMENT,
@@ -87,3 +113,61 @@ CREATE TABLE votes (
 	PRIMARY KEY (id),
 	FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+INSERT INTO votes (user_id, voteable_id, voteable_type, vote) VALUES
+	(1, 1, 'comment', 0),
+	(1, 2, 'comment', 0),
+	(1, 3, 'comment', 0),
+	(1, 4, 'comment', 1),
+	(1, 5, 'comment', 0),
+	(1, 6, 'comment', 1),
+	(1, 7, 'comment', 0),
+	(1, 8, 'comment', 1),
+	(1, 9, 'comment', 1),
+	(1, 10, 'comment', 0),
+	(1, 11, 'comment', 1),
+	(1, 12, 'comment', 0),
+	(1, 13, 'comment', 1),
+	(1, 14, 'comment', 0),
+	(2, 1, 'comment', 0),
+	(2, 2, 'comment', 1),
+	(2, 3, 'comment', 1),
+	(2, 4, 'comment', 0),
+	(2, 5, 'comment', 1),
+	(2, 6, 'comment', 0),
+	(2, 7, 'comment', 1),
+	(2, 8, 'comment', 0),
+	(2, 9, 'comment', 0),
+	(2, 10, 'comment', 1),
+	(2, 11, 'comment', 0),
+	(2, 12, 'comment', 1),
+	(2, 13, 'comment', 0),
+	(2, 14, 'comment', 1),
+	(3, 1, 'comment', 1),
+	(3, 2, 'comment', 1),
+	(3, 3, 'comment', 1),
+	(3, 4, 'comment', 1),
+	(3, 5, 'comment', 1),
+	(3, 6, 'comment', 1),
+	(3, 7, 'comment', 0),
+	(3, 8, 'comment', 0),
+	(3, 9, 'comment', 0),
+	(3, 10, 'comment', 0),
+	(3, 11, 'comment', 0),
+	(3, 12, 'comment', 0),
+	(3, 13, 'comment', 1),
+	(3, 14, 'comment', 0),
+	(4, 1, 'comment', 0),
+	(4, 2, 'comment', 1),
+	(4, 3, 'comment', 0),
+	(4, 4, 'comment', 1),
+	(4, 5, 'comment', 0),
+	(4, 6, 'comment', 1),
+	(4, 7, 'comment', 1),
+	(4, 8, 'comment', 0),
+	(4, 9, 'comment', 0),
+	(4, 10, 'comment', 1),
+	(4, 11, 'comment', 0),
+	(4, 12, 'comment', 1),
+	(4, 13, 'comment', 1),
+	(4, 14, 'comment', 0);

@@ -4,7 +4,6 @@ import java.util.Date;
 
 public class Vote {
 
-	//private int id;
 	private int userId;
 	private int voteableId;
 	private String voteableType;
@@ -17,7 +16,6 @@ public class Vote {
 	}
 	
 	public Vote(int userId, int voteableId, String voteableType, boolean vote, Date createdAt) {
-		//this.id = id;
 		this.userId = userId;
 		this.voteableId = voteableId;
 		this.voteableType = voteableType;
