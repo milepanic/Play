@@ -100,7 +100,7 @@ $(document).ready(function() {
 				follows(data.auth, userId);
 				voted(data.auth, videoId);
 				getComments(data.auth);
-			} else getComments(null);
+			} else getComments();
 			
 		});
 		
